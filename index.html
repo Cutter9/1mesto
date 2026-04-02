@@ -1,0 +1,119 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1Mesto | Яндекс Карты</title>
+    <link rel="preload" href="assets/fonts/FindSansPro-Light.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/FindSansPro-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/FindSansPro-Medium.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/FindSansPro-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="script.js"></script>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <div class="header__inner">
+          <a class="logo" href="#" aria-label="1Mesto">
+            <img src="assets/logo.svg" alt="Логотип 1Mesto" />
+          </a>
+
+          <nav class="nav" aria-label="Основное меню">
+            <a class="nav__item" href="#">Главная</a>
+            <a class="nav__item" href="#">Услуги</a>
+            <a class="nav__item" href="#">Наши проекты</a>
+            <a class="nav__item" href="#">Отзывы</a>
+            <a class="nav__item" href="#">Тарифы</a>
+            <a class="nav__item" href="#">Контакты</a>
+          </nav>
+
+          <div class="contacts">
+            <a class="contacts__phone" href="tel:+79879499754">+7 (987) 949-97-54</a>
+            <button class="button button--small" type="button">Задать вопрос</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero__inner">
+            <div class="hero__content">
+              <span class="hero__badge">До&nbsp;+150% обращений с&nbsp;геосервисов</span>
+              <h1>Помогаем бизнесу расти в&nbsp;<span class="text-accent-red">Яндекс Картах</span> и&nbsp;получать больше обращений</h1>
+              <p>
+                Берём на&nbsp;себя работу с&nbsp;карточкой компании и&nbsp;репутацией в&nbsp;сети, чтобы&nbsp;Яндекс
+                Карты стали полноценным каналом привлечения клиентов.
+              </p>
+              <button class="button button--main" type="button">Получить разбор карточки</button>
+            </div>
+
+            <div class="hero__visual" aria-label="Блок 3D-модели смартфонов">
+              <div class="hero__glow" aria-hidden="true"></div>
+              <div class="hero__spline-wrap">
+                <canvas id="hero-spline-canvas" aria-label="3D-сцена с телефонами"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="benefits" aria-label="Преимущества продвижения в Яндекс Картах">
+          <div class="benefits__inner">
+            <div class="benefits__heading">
+              <h2>Почему <span class="text-accent-red">Яндекс Карты</span> — это рабочий канал привлечения клиентов</h2>
+            </div>
+
+            <div class="benefits__cards" data-reveal-group>
+              <article class="benefit-card" data-reveal-card>
+                <div class="benefit-card__icon" aria-hidden="true"><img src="assets/icons/Icon/Map.svg" alt="" /></div>
+                <div class="benefit-card__text">
+                  <h3>Клиенты уже ищут вас&nbsp;там</h3>
+                  <p>
+                    Более 80% пользователей Яндекса ищут товары и&nbsp;услуги через Карты
+                    и&nbsp;поиск с&nbsp;геопривязкой.
+                  </p>
+                </div>
+              </article>
+
+              <article class="benefit-card" data-reveal-card>
+                <div class="benefit-card__icon" aria-hidden="true"><img src="assets/icons/Icon/Message-notif.svg" alt="" /></div>
+                <div class="benefit-card__text">
+                  <h3>Карточка может приводить обращения</h3>
+                  <p>
+                    До&nbsp;40% звонков и&nbsp;заявок малый бизнес может получать через правильно
+                    оформленную карточку компании.
+                  </p>
+                </div>
+              </article>
+
+              <article class="benefit-card" data-reveal-card>
+                <div class="benefit-card__icon" aria-hidden="true"><img src="assets/icons/Icon/Medal-star.svg" alt="" /></div>
+                <div class="benefit-card__text">
+                  <h3>Доверие формируется прямо в&nbsp;карточке</h3>
+                  <p>
+                    Отзывы, рейтинг, фото и&nbsp;наполнение помогают клиенту принять решение
+                    быстрее.
+                  </p>
+                </div>
+              </article>
+
+              <article class="benefit-card" data-reveal-card>
+                <div class="benefit-card__icon" aria-hidden="true"><img src="assets/icons/Icon/Chart.svg" alt="" /></div>
+                <div class="benefit-card__text">
+                  <h3>Результат зависит от&nbsp;системной работы</h3>
+                  <p>
+                    Карточки, с&nbsp;которыми работают системно, могут приносить
+                    в&nbsp;3–5&nbsp;раз больше показов и&nbsp;обращений.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="custom-cursor" aria-hidden="true"></div>
+    <div class="custom-cursor-dot" aria-hidden="true"></div>
+  </body>
+</html>
+
