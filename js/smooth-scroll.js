@@ -1,3 +1,5 @@
+import { isLikelyLowPerformanceDevice } from "./utils.js";
+
 export function initSmoothScroll() {
   const supportsFinePointer =
     window.matchMedia("(hover: hover)").matches &&
@@ -5,7 +7,7 @@ export function initSmoothScroll() {
 
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  if (!supportsFinePointer || prefersReducedMotion) return;
+  if (!supportsFinePointer || prefersReducedMotion || isLikelyLowPerformanceDevice()) return;
 
   document.documentElement.style.scrollBehavior = "auto";
 

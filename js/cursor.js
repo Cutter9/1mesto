@@ -1,3 +1,5 @@
+import { isLikelyLowPerformanceDevice } from "./utils.js";
+
 export function initCustomCursor() {
   const cursor = document.querySelector(".custom-cursor");
   const dot = document.querySelector(".custom-cursor-dot");
@@ -13,38 +15,73 @@ export function initCustomCursor() {
     return;
   }
 
+  const lowPerformanceMode = isLikelyLowPerformanceDevice();
+  if (lowPerformanceMode) {
+    cursor.classList.add("custom-cursor--lite");
+  }
+
   let targetX = window.innerWidth / 2;
   let targetY = window.innerHeight / 2;
   let cursorX = targetX;
   let cursorY = targetY;
-  const lagFactor = 0.16;
+  let rafId = null;
+  let lastMoveTs = 0;
+  let isInsideWindow = true;
+  const lagFactor = lowPerformanceMode ? 0.24 : 0.16;
+
+  const stopAnimation = () => {
+    if (rafId === null) return;
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  };
 
   const animateCursor = () => {
     cursorX += (targetX - cursorX) * lagFactor;
     cursorY += (targetY - cursorY) * lagFactor;
     cursor.style.left = `${cursorX}px`;
     cursor.style.top = `${cursorY}px`;
-    requestAnimationFrame(animateCursor);
+
+    const isSettled = Math.abs(targetX - cursorX) < 0.2 && Math.abs(targetY - cursorY) < 0.2;
+    const isIdle = performance.now() - lastMoveTs > 140;
+
+    if (!isInsideWindow || (isSettled && isIdle)) {
+      rafId = null;
+      return;
+    }
+
+    rafId = requestAnimationFrame(animateCursor);
+  };
+
+  const ensureAnimation = () => {
+    if (rafId !== null) return;
+    rafId = requestAnimationFrame(animateCursor);
   };
 
   const updatePosition = (event) => {
-    targetX = event.clientX;
-    targetY = event.clientY;
-    dot.style.left = `${targetX}px`;
-    dot.style.top = `${targetY}px`;
+    const x = event.clientX;
+    const y = event.clientY;
+    targetX = x;
+    targetY = y;
+    dot.style.left = `${x}px`;
+    dot.style.top = `${y}px`;
     cursor.style.opacity = "1";
     dot.style.opacity = "1";
+    lastMoveTs = performance.now();
+    ensureAnimation();
   };
 
   document.addEventListener("mousemove", updatePosition, { passive: true });
   document.addEventListener("mouseleave", () => {
+    isInsideWindow = false;
     cursor.style.opacity = "0";
     dot.style.opacity = "0";
+    stopAnimation();
   });
   document.addEventListener("mouseenter", () => {
+    isInsideWindow = true;
     cursor.style.opacity = "1";
     dot.style.opacity = "1";
+    lastMoveTs = performance.now();
+    ensureAnimation();
   });
-
-  animateCursor();
 }

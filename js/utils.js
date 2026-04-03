@@ -6,3 +6,18 @@ export function mapRange(value, inMin, inMax, outMin, outMax) {
   const progress = (value - inMin) / (inMax - inMin);
   return outMin + progress * (outMax - outMin);
 }
+
+export function isLikelyLowPerformanceDevice() {
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const connection = navigator.connection;
+  const saveDataEnabled = connection?.saveData === true;
+  const effectiveType = typeof connection?.effectiveType === "string" ? connection.effectiveType : "";
+  const hasSlowConnection = /(^slow-2g$|^2g$)/i.test(effectiveType);
+
+  const hardwareThreads = navigator.hardwareConcurrency;
+  const deviceMemory = navigator.deviceMemory;
+  const hasLowThreadCount = typeof hardwareThreads === "number" && hardwareThreads > 0 && hardwareThreads <= 4;
+  const hasLowMemory = typeof deviceMemory === "number" && deviceMemory > 0 && deviceMemory <= 4;
+
+  return prefersReducedMotion || saveDataEnabled || hasSlowConnection || (hasLowThreadCount && hasLowMemory);
+}

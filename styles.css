@@ -80,13 +80,21 @@ body {
   border: 2px solid #000000;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.01);
-  backdrop-filter: invert(1);
-  -webkit-backdrop-filter: invert(1);
+  backdrop-filter: invert(1) saturate(1.05);
+  -webkit-backdrop-filter: invert(1) saturate(1.05);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 8px 18px rgba(0, 0, 0, 0.08);
   pointer-events: none;
   z-index: 9999;
   opacity: 0;
   transform: translate(-50%, -50%);
-  transition: opacity 120ms ease;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.custom-cursor.custom-cursor--lite {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03);
 }
 
 .custom-cursor-dot {
@@ -377,6 +385,26 @@ main {
   background: transparent;
   display: block;
   touch-action: none;
+}
+
+.hero__spline-wrap--disabled {
+  display: none;
+}
+
+.hero__visual--fallback .hero__glow {
+  opacity: 0.55;
+  width: 520px;
+  height: 520px;
+}
+
+.hero__visual--fallback::after {
+  content: "";
+  position: absolute;
+  inset: 18% 14%;
+  background: url("assets/logo.svg") center / contain no-repeat;
+  opacity: 0.18;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .benefits {
