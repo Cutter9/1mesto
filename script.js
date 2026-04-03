@@ -3,6 +3,24 @@ import { initHeroSpline } from "./js/spline.js";
 import { initRevealCards } from "./js/reveal-cards.js";
 import { initSmoothScroll } from "./js/smooth-scroll.js";
 import { initHeaderScrollState } from "./js/header-scroll.js";
+import { initPrinciplesCarousel } from "./js/principles-carousel.js";
+
+function scheduleAtIdle(task, timeout = 1500, fallbackDelay = 320) {
+  let started = false;
+
+  const runOnce = () => {
+    if (started) return;
+    started = true;
+    task();
+  };
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(runOnce, { timeout });
+    return;
+  }
+
+  window.setTimeout(runOnce, fallbackDelay);
+}
 
 function scheduleHeroSplineInit() {
   const heroSection = document.querySelector(".hero");
@@ -56,7 +74,11 @@ function scheduleHeroSplineInit() {
 }
 
 scheduleHeroSplineInit();
-initCustomCursor();
-initRevealCards();
-initSmoothScroll();
 initHeaderScrollState();
+initRevealCards();
+
+scheduleAtIdle(() => {
+  initSmoothScroll();
+  initCustomCursor();
+  initPrinciplesCarousel();
+});

@@ -2,8 +2,9 @@ export function clamp(value, min, max) {
   return Math.max(min, Math.min(value, max));
 }
 
+export const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 export function isLikelyLowPerformanceDevice() {
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const connection = navigator.connection;
   const saveDataEnabled = connection?.saveData === true;
   const effectiveType = typeof connection?.effectiveType === "string" ? connection.effectiveType : "";

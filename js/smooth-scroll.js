@@ -1,11 +1,9 @@
-import { clamp, isLikelyLowPerformanceDevice } from "./utils.js";
+import { clamp, isLikelyLowPerformanceDevice, prefersReducedMotion } from "./utils.js";
 
 export function initSmoothScroll() {
   const supportsFinePointer =
     window.matchMedia("(hover: hover)").matches &&
     window.matchMedia("(pointer: fine)").matches;
-
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (!supportsFinePointer || prefersReducedMotion || isLikelyLowPerformanceDevice()) return;
 
