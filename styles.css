@@ -131,7 +131,6 @@ a {
 .page {
   position: relative;
   overflow: visible;
-  min-height: 5000px;
 }
 
 main {

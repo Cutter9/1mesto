@@ -1,8 +1,8 @@
+import { clamp } from "./utils.js";
+
 export function initRevealCards() {
   const cards = document.querySelectorAll("[data-reveal-card]");
   if (!cards.length) return;
-
-  const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
 
   let ticking = false;
 

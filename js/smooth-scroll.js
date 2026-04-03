@@ -1,4 +1,4 @@
-import { isLikelyLowPerformanceDevice } from "./utils.js";
+import { clamp, isLikelyLowPerformanceDevice } from "./utils.js";
 
 export function initSmoothScroll() {
   const supportsFinePointer =
@@ -15,7 +15,6 @@ export function initSmoothScroll() {
   let targetY = currentY;
   let rafId = null;
 
-  const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
   const SCROLL_SPEED = 0.8;
   const INERTIA_EASING = 0.016;
 
