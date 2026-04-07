@@ -4,6 +4,7 @@ import { initRevealCards } from "./js/reveal-cards.js";
 import { initSmoothScroll } from "./js/smooth-scroll.js";
 import { initHeaderScrollState } from "./js/header-scroll.js";
 import { initPrinciplesCarousel } from "./js/principles-carousel.js";
+import { initBrandBlockReveal } from "./js/brand-block-reveal.js";
 
 function scheduleAtIdle(task, timeout = 1500, fallbackDelay = 320) {
   let started = false;
@@ -81,4 +82,5 @@ scheduleAtIdle(() => {
   initSmoothScroll();
   initCustomCursor();
   initPrinciplesCarousel();
+  initBrandBlockReveal();
 });

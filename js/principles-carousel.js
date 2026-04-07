@@ -3,6 +3,7 @@ import { prefersReducedMotion } from "./utils.js";
 const AUTO_PLAY_MS = 6000;
 const VISIBLE_DEPTH = 4;
 const DRAG_STEP_THRESHOLD = 128;
+const MIN_STEP_INTERVAL_MS = 280;
 
 const DEPTH_SCALES = [1, 0.9, 0.8, 0.7, 0.6];
 const DEPTH_CONTENT_OPACITY = [1, 0.52, 0.35, 0.22, 0.14];
@@ -20,7 +21,8 @@ const PRINCIPLES = [
     icon: "assets/icons/3d%20Icons/Chess.png",
     iconAlt: "Иконка шахматной фигуры",
     title: "Индивидуальная стратегия",
-    description: "Учитываем особенности бизнеса, ниши и конкретной точки, чтобы карточка компании выделялась среди конкурентов."
+    description:
+      "Учитываем особенности бизнеса, ниши и конкретной точки, чтобы карточка компании выделялась среди конкурентов."
   },
   {
     icon: "assets/icons/3d%20Icons/Stairs.png",
@@ -135,15 +137,18 @@ export function initPrinciplesCarousel() {
   let movedDuringPointer = false;
   let pointerDownCardIndex = null;
   let ignoreNextClick = false;
+  let lastStepTimestamp = -Infinity;
 
   // Per-card hidden state to skip redundant style writes for off-screen cards
   const cardHidden = new Array(cardElements.length).fill(false);
 
-  // Only update the single active progress bar — not all 8 on every frame
+  // Only update the single active progress bar - not all 8 on every frame
   const updateProgressBars = () => {
     const fill = progressElements[activeIndex];
     if (fill) fill.style.transform = `scaleX(${progress.toFixed(4)})`;
   };
+
+  const canStep = (time = performance.now()) => time - lastStepTimestamp >= MIN_STEP_INTERVAL_MS;
 
   const render = () => {
     // Read shared geometry once per render instead of once per card
@@ -160,7 +165,7 @@ export function initPrinciplesCarousel() {
     const spreadClamped = Math.max(0.78, Math.min(spreadFactor, 1.8));
     const frontTopY = BASE_FRONT_TOP_Y * heightRatio;
 
-    // Pre-compute layout per unique depth (0–4) — 5 iterations instead of 8
+    // Pre-compute layout per unique depth (0-4) - 5 iterations instead of 8
     const depthLayouts = new Array(VISIBLE_DEPTH + 1);
     for (let depth = 0; depth <= VISIBLE_DEPTH; depth++) {
       const scale = DEPTH_SCALES[depth];
@@ -245,19 +250,23 @@ export function initPrinciplesCarousel() {
     updateProgressBars();
   };
 
-  const setActiveIndex = (nextIndex) => {
+  const setActiveIndex = (nextIndex, options = {}) => {
+    const { force = false } = options;
+    const now = performance.now();
+    if (!force && !canStep(now)) return false;
+
     // Reset old active progress bar before switching
     const prevFill = progressElements[activeIndex];
     if (prevFill) prevFill.style.transform = "scaleX(0)";
 
     activeIndex = (nextIndex + cardElements.length) % cardElements.length;
+    lastStepTimestamp = now;
     progress = 0;
     render();
+    return true;
   };
 
-  const step = (direction) => {
-    setActiveIndex(activeIndex + direction);
-  };
+  const step = (direction, options = {}) => setActiveIndex(activeIndex + direction, options);
 
   const tick = (time) => {
     if (!isVisible || document.hidden) {
@@ -318,20 +327,21 @@ export function initPrinciplesCarousel() {
 
   const handlePointerMove = (event) => {
     if (!isPointerDown) return;
-    let delta = event.clientX - pointerAnchorX;
+    const delta = event.clientX - pointerAnchorX;
 
-    while (delta <= -DRAG_STEP_THRESHOLD) {
-      step(1);
-      pointerAnchorX -= DRAG_STEP_THRESHOLD;
-      movedDuringPointer = true;
-      delta = event.clientX - pointerAnchorX;
+    if (delta <= -DRAG_STEP_THRESHOLD) {
+      if (step(1)) {
+        pointerAnchorX = event.clientX;
+        movedDuringPointer = true;
+      }
+      return;
     }
 
-    while (delta >= DRAG_STEP_THRESHOLD) {
-      step(-1);
-      pointerAnchorX += DRAG_STEP_THRESHOLD;
-      movedDuringPointer = true;
-      delta = event.clientX - pointerAnchorX;
+    if (delta >= DRAG_STEP_THRESHOLD) {
+      if (step(-1)) {
+        pointerAnchorX = event.clientX;
+        movedDuringPointer = true;
+      }
     }
   };
 
@@ -341,8 +351,9 @@ export function initPrinciplesCarousel() {
     isPointerDown = false;
     root.classList.remove("is-grabbing");
     if (!movedDuringPointer && pointerDownCardIndex !== null && pointerDownCardIndex !== activeIndex) {
-      setActiveIndex(pointerDownCardIndex);
-      ignoreNextClick = true;
+      if (setActiveIndex(pointerDownCardIndex, { force: true })) {
+        ignoreNextClick = true;
+      }
     } else if (movedDuringPointer) {
       ignoreNextClick = true;
     }
@@ -423,3 +434,4 @@ export function initPrinciplesCarousel() {
   isVisible = initialRect.top < window.innerHeight && initialRect.bottom > 0;
   startTicker();
 }
+

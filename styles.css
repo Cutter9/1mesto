@@ -33,13 +33,17 @@
 :root {
   --bg-page: #f8f8f8;
   --text-main: #20231d;
-  --text-muted: #606060;
+  --text-muted: #696d66;
   --accent: #99ef4d;
-  --accent-red: #ff2e2e;
+  --accent-red: #ff4433;
+  --surface-card: #fdfffb;
+  --surface-card-soft: rgba(153, 239, 77, 0.15);
   --hero-max-width: 1440px;
   --section-gap: 160px;
   --font-family-base: "Find Sans Pro", "Century Gothic", "Trebuchet MS", Arial, sans-serif;
-  --spline-scale: 0.45;
+  --spline-scale: 0.62;
+  --spline-viewer-ratio: 1200 / 1350;
+  --hero-phones-height-desktop: 500px;
 }
 
 *,
@@ -271,8 +275,8 @@ main > section + section {
 .hero {
   position: relative;
   width: 100%;
-  height: 85vh;
-  min-height: 85vh;
+  height: 700px;
+  min-height: 700px;
   padding: 140px 40px 40px;
   z-index: 0;
 }
@@ -311,18 +315,32 @@ main > section + section {
   z-index: 1;
 }
 
+.hero__text {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero__heading {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .hero__badge {
   width: fit-content;
-  background: rgba(153, 239, 77, 0.4);
+  background: rgba(153, 239, 77, 0.15);
   border-radius: 12px;
   padding: 12px 20px;
   font-size: 18px;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .hero h1 {
   margin: 0;
-  font-size: 56px;
+  font-size: 54px;
   line-height: 1.3;
   font-weight: 500;
 }
@@ -343,7 +361,7 @@ main > section + section {
 .hero__visual {
   position: relative;
   width: clamp(420px, 34vw, 560px);
-  aspect-ratio: 9 / 10;
+  aspect-ratio: var(--spline-viewer-ratio);
   height: auto;
   flex: 0 0 auto;
   overflow: visible;
@@ -375,17 +393,16 @@ main > section + section {
   z-index: 2;
   width: 100%;
   height: 100%;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .hero__spline-wrap canvas {
   position: absolute;
-  top: 50%;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  transform: translateY(-50%) scale(var(--spline-scale));
-  transform-origin: right center;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  transform-origin: center center;
   background: transparent;
   display: block;
   touch-action: none;
@@ -411,6 +428,42 @@ main > section + section {
   pointer-events: none;
 }
 
+@media (min-width: 1025px) {
+  .hero__content {
+    gap: 48px;
+  }
+
+  .hero__heading {
+    gap: 16px;
+  }
+
+  .hero__badge {
+    line-height: 1.2;
+  }
+
+  .hero h1 {
+    font-size: 54px;
+  }
+
+  .hero p {
+    color: #696d66;
+    line-height: 1.4;
+  }
+
+  .button--main {
+    margin-top: 0;
+    width: fit-content;
+    min-width: 0;
+    line-height: 1.2;
+  }
+
+  .hero__visual {
+    height: auto;
+    aspect-ratio: var(--spline-viewer-ratio);
+  }
+
+}
+
 .benefits {
   width: 100%;
   padding: 0 40px 120px;
@@ -419,15 +472,15 @@ main > section + section {
 .benefits__inner {
   width: min(100%, var(--hero-max-width));
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 650px 650px;
-  justify-content: space-between;
-  gap: 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 80px;
 }
 
 .benefits__heading {
+  flex: 1 1 0;
   position: sticky;
-  top: calc(50vh - 130px);
+  top: 0;
   align-self: start;
   min-height: 260px;
   display: flex;
@@ -442,6 +495,8 @@ main > section + section {
 }
 
 .benefits__cards {
+  width: 650px;
+  flex: 0 0 650px;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -518,8 +573,8 @@ main > section + section {
   max-width: 1100px;
   margin: 0 auto 80px;
   text-align: center;
-  font-size: 48px;
-  line-height: 1.2;
+  font-size: 40px;
+  line-height: 1.3;
   font-weight: 500;
 }
 
@@ -644,13 +699,275 @@ main > section + section {
   box-shadow: 0 16px 54px rgba(0, 0, 0, var(--shadow-alpha, 0.07));
 }
 
+.audience {
+  width: 100%;
+  padding: 0 40px;
+}
+
+.audience__inner {
+  width: min(100%, var(--hero-max-width));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+}
+
+.audience__title {
+  margin: 0;
+  max-width: 840px;
+  text-align: center;
+  font-size: 40px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.audience__grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+
+.audience-card {
+  background: linear-gradient(178.44deg, #fdfffb 3.45%, #f8f8f8 96.55%);
+  border-radius: 40px;
+  padding: 40px;
+}
+
+.audience-card h3 {
+  margin: 0 0 16px;
+  font-size: 28px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.audience-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.brand-block {
+  width: 100%;
+  padding: 80px 0;
+  border-bottom-left-radius: 100px;
+  border-bottom-right-radius: 100px;
+  overflow: hidden;
+  background: linear-gradient(177.76deg, #f8f8f8 3.45%, #fdfffb 96.55%);
+}
+
+.brand-block__inner {
+  width: min(100%, var(--hero-max-width));
+  margin: 0 auto;
+  padding: 0 40px;
+  text-align: center;
+}
+
+.brand-block__name {
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(92px, 16.6vw, 240px);
+  line-height: 0.92;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.brand-block__tagline {
+  margin: 0;
+  font-size: clamp(52px, 6.94vw, 100px);
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.brand-block__char {
+  opacity: 0;
+  transition: opacity 90ms linear;
+}
+
+.pricing {
+  width: 100%;
+  padding: 0 40px 160px;
+}
+
+.pricing__inner {
+  width: min(100%, var(--hero-max-width));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+}
+
+.pricing__title {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 40px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.pricing__plans {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+}
+
+.pricing-plan {
+  display: flex;
+  align-items: stretch;
+  width: 440px;
+  max-width: 100%;
+  flex: 0 0 440px;
+}
+
+.pricing-plan__tape {
+  width: 20px;
+  height: 68px;
+  flex: 0 0 20px;
+  margin-top: 40px;
+  background: var(--accent);
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+}
+
+.pricing-plan__card {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 614px;
+  height: 614px;
+  background: var(--surface-card);
+  border-radius: 40px;
+  padding-block: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.pricing-plan__content {
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.pricing-plan__head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.pricing-plan__label {
+  margin: 0;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 24px 16px 40px;
+  background: var(--accent);
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  font-size: 28px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.pricing-plan__subhead {
+  width: 100%;
+  padding-inline: 40px;
+}
+
+.pricing-plan__duration {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.pricing-plan__points {
+  margin: 0;
+  width: 100%;
+  padding: 0 40px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1 1 auto;
+}
+
+.pricing-plan__points li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.pricing-plan__points li::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  background: url("assets/icons/Icon/Direct-right.svg") center / contain no-repeat;
+  opacity: 0.9;
+}
+
+.pricing-plan__cta-wrap {
+  width: 100%;
+  padding-inline: 40px;
+}
+
+.pricing-plan__cta {
+  width: 100%;
+  height: 66px;
+  border: 0;
+  border-radius: 20px;
+  background: var(--surface-card-soft);
+  color: var(--text-main);
+  font: inherit;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.additional-services {
+  width: 100%;
+  padding: 0 40px 160px;
+}
+
+.additional-services__inner {
+  width: min(100%, var(--hero-max-width));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+}
+
+.additional-services__title {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 40px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.additional-services__content {
+  width: 100%;
+  height: 614px;
+}
+
 @media (max-width: 1440px) {
   .contacts__phone {
     font-size: 18px;
   }
 
   .hero h1 {
-    font-size: clamp(40px, 3.4vw, 56px);
+    font-size: clamp(40px, 3.4vw, 54px);
   }
 
   .hero__badge {
@@ -671,6 +988,41 @@ main > section + section {
     gap: 20px;
   }
 
+  .benefits__inner {
+    gap: 40px;
+  }
+
+  .benefits__cards {
+    width: min(100%, 650px);
+    flex: 1 1 0;
+  }
+
+  .audience__grid {
+    gap: 24px;
+  }
+
+  .pricing__plans {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pricing-plan {
+    width: min(100%, 660px);
+    flex: 1 1 440px;
+  }
+
+  .additional-services {
+    padding: 0 40px 120px;
+  }
+
+  .additional-services__inner {
+    gap: 56px;
+  }
+
+  .additional-services__title {
+    font-size: 34px;
+  }
+
   .principle-card {
     width: 400px;
     min-height: 530px;
@@ -681,6 +1033,7 @@ main > section + section {
 
 @media (max-width: 1024px) {
   .hero {
+    height: auto;
     min-height: auto;
     padding-top: 120px;
   }
@@ -701,7 +1054,7 @@ main > section + section {
   }
 
   .benefits__inner {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 28px;
   }
 
@@ -713,6 +1066,71 @@ main > section + section {
 
   .benefits__heading h2 {
     font-size: 34px;
+  }
+
+  .benefits__cards {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .audience {
+    padding: 0;
+  }
+
+  .audience__inner {
+    gap: 56px;
+  }
+
+  .audience__title {
+    font-size: 34px;
+  }
+
+  .audience__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .brand-block {
+    padding: 64px 0;
+    border-bottom-left-radius: 64px;
+    border-bottom-right-radius: 64px;
+  }
+
+  .brand-block__inner {
+    padding: 0;
+  }
+
+  .pricing {
+    padding: 0 0 120px;
+  }
+
+  .pricing__inner {
+    gap: 56px;
+  }
+
+  .pricing__title {
+    font-size: 34px;
+  }
+
+  .pricing__plans {
+    width: 100%;
+  }
+
+  .pricing-plan {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .additional-services {
+    padding: 0 0 120px;
+  }
+
+  .additional-services__title {
+    font-size: 34px;
+  }
+
+  .additional-services__content {
+    height: 420px;
   }
 
   .principles {
@@ -753,7 +1171,7 @@ main > section + section {
   }
 
   main {
-    padding: 0 20px;
+    padding: 0;
   }
 
   .header__inner {
@@ -806,6 +1224,130 @@ main > section + section {
     font-size: 17px;
   }
 
+  .audience {
+    padding: 0 20px;
+  }
+
+  .audience__inner {
+    gap: 40px;
+  }
+
+  .audience__title {
+    font-size: 30px;
+  }
+
+  .audience-card {
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  .audience-card h3 {
+    margin-bottom: 12px;
+    font-size: 22px;
+  }
+
+  .audience-card p {
+    font-size: 17px;
+  }
+
+  .brand-block {
+    padding: 48px 0;
+    border-bottom-left-radius: 36px;
+    border-bottom-right-radius: 36px;
+  }
+
+  .brand-block__inner {
+    padding: 0 20px;
+  }
+
+  .brand-block__name {
+    font-size: clamp(52px, 18.8vw, 72px);
+    line-height: 1;
+  }
+
+  .brand-block__tagline {
+    font-size: clamp(36px, 10.7vw, 46px);
+  }
+
+  .pricing {
+    padding: 0 20px 80px;
+  }
+
+  .pricing__inner {
+    gap: 40px;
+  }
+
+  .pricing__title {
+    font-size: 30px;
+  }
+
+  .pricing-plan__card {
+    min-height: unset;
+    height: auto;
+    border-radius: 24px;
+    padding: 24px 0;
+    gap: 24px;
+  }
+
+  .pricing-plan__tape {
+    width: 14px;
+    height: 48px;
+    flex-basis: 14px;
+    margin-top: 24px;
+  }
+
+  .pricing-plan__label {
+    padding: 12px 18px 12px 24px;
+    font-size: 22px;
+  }
+
+  .pricing-plan__duration {
+    font-size: 20px;
+  }
+
+  .pricing-plan__subhead,
+  .pricing-plan__points,
+  .pricing-plan__cta-wrap {
+    padding-inline: 24px;
+  }
+
+  .pricing-plan__points {
+    gap: 12px;
+  }
+
+  .pricing-plan__points li {
+    gap: 10px;
+    font-size: 16px;
+  }
+
+  .pricing-plan__points li::before {
+    width: 14px;
+    height: 14px;
+    flex-basis: 14px;
+  }
+
+  .pricing-plan__cta {
+    height: 56px;
+    border-radius: 16px;
+    font-size: 20px;
+  }
+
+  .additional-services {
+    padding: 0 20px 80px;
+  }
+
+  .additional-services__inner {
+    gap: 40px;
+  }
+
+  .additional-services__title {
+    font-size: 30px;
+  }
+
+  .additional-services__content {
+    height: 320px;
+  }
+
   .principles {
     padding: 0 20px 80px;
   }
@@ -847,3 +1389,4 @@ main > section + section {
     font-size: 16px;
   }
 }
+
