@@ -42,7 +42,7 @@ function splitElementToChars(element) {
     Array.from(line).forEach((char) => {
       const span = document.createElement("span");
       span.className = "brand-block__char";
-      span.textContent = char === " " ? "\u00A0" : char;
+      span.textContent = char;
       chars.push(span);
       fragment.appendChild(span);
     });

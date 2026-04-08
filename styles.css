@@ -275,8 +275,8 @@ main > section + section {
 .hero {
   position: relative;
   width: 100%;
-  height: 700px;
-  min-height: 700px;
+  height: 90vh;
+  min-height: 90vh;
   padding: 140px 40px 40px;
   z-index: 0;
 }
@@ -480,7 +480,7 @@ main > section + section {
 .benefits__heading {
   flex: 1 1 0;
   position: sticky;
-  top: 0;
+  top: max(24px, calc(50vh - 130px));
   align-self: start;
   min-height: 260px;
   display: flex;
@@ -751,6 +751,11 @@ main > section + section {
 
 .brand-block {
   width: 100%;
+  overflow-x: hidden;
+}
+
+.brand-block__frame {
+  width: 100%;
   padding: 80px 0;
   border-bottom-left-radius: 100px;
   border-bottom-right-radius: 100px;
@@ -763,6 +768,18 @@ main > section + section {
   margin: 0 auto;
   padding: 0 40px;
   text-align: center;
+}
+
+.brand-block.brand-block--autoscaled {
+  min-height: var(--brand-block-scaled-height, auto);
+}
+
+.brand-block.brand-block--autoscaled .brand-block__frame {
+  width: 1440px;
+  max-width: none;
+  margin-inline: auto;
+  transform-origin: top center;
+  transform: scale(var(--brand-block-scale, 1));
 }
 
 .brand-block__name {
@@ -779,6 +796,8 @@ main > section + section {
   font-size: clamp(52px, 6.94vw, 100px);
   line-height: 1.2;
   font-weight: 500;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .brand-block__char {
@@ -1090,7 +1109,7 @@ main > section + section {
     gap: 20px;
   }
 
-  .brand-block {
+  .brand-block__frame {
     padding: 64px 0;
     border-bottom-left-radius: 64px;
     border-bottom-right-radius: 64px;
@@ -1250,7 +1269,7 @@ main > section + section {
     font-size: 17px;
   }
 
-  .brand-block {
+  .brand-block__frame {
     padding: 48px 0;
     border-bottom-left-radius: 36px;
     border-bottom-right-radius: 36px;
