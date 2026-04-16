@@ -26,7 +26,9 @@ export function initAdditionalSlider() {
 
   let step = 0;
   let maxOffset = 0;
+  let maxIndex = 0;
   let index = 0;
+  const NEXT_DISABLE_TOLERANCE = 16;
 
   const updateMetrics = () => {
     const cardWidth = cards[0].offsetWidth;
@@ -36,16 +38,18 @@ export function initAdditionalSlider() {
 
     if (step <= 0) {
       index = 0;
+      maxIndex = 0;
     } else {
-      const maxIndex = Math.ceil(maxOffset / step);
+      maxIndex = Math.max(0, Math.ceil(maxOffset / step));
       index = clamp(index, 0, maxIndex);
     }
   };
 
   const updateArrows = () => {
     const currentOffset = Math.min(index * step, maxOffset);
+    const remainingOffset = maxOffset - currentOffset;
     prevButton.disabled = currentOffset <= 0;
-    nextButton.disabled = currentOffset >= maxOffset;
+    nextButton.disabled = remainingOffset <= NEXT_DISABLE_TOLERANCE;
   };
 
   const render = (shouldAnimate = true) => {
@@ -69,7 +73,6 @@ export function initAdditionalSlider() {
 
   nextButton.addEventListener("click", () => {
     index += 1;
-    const maxIndex = step > 0 ? Math.ceil(maxOffset / step) : 0;
     if (index > maxIndex) index = maxIndex;
     render();
   });

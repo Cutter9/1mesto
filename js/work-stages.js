@@ -94,11 +94,12 @@ export function initWorkStagesAnimation() {
   const inner = section?.querySelector(".work-stages__inner");
   const headingWrap = section?.querySelector(".work-stages__heading-wrap");
   const viewport = section?.querySelector(".work-stages__viewport");
+  const pathsLayer = section?.querySelector(".work-stages__paths");
   const track = section?.querySelector("[data-stage-track]");
   const stages = Array.from(section?.querySelectorAll("[data-stage]") || []);
   const paths = Array.from(section?.querySelectorAll("[data-stage-path]") || []);
 
-  if (!section || !sticky || !inner || !headingWrap || !viewport || !track || stages.length === 0) return;
+  if (!section || !sticky || !inner || !headingWrap || !viewport || !pathsLayer || !track || stages.length === 0) return;
 
   const runtime = getGsapRuntime();
   if (!runtime?.ScrollTrigger || prefersReducedMotion) return;
@@ -115,8 +116,8 @@ export function initWorkStagesAnimation() {
 
   const resetInlineStyles = () => {
     inner.style.removeProperty("transform");
-    headingWrap.style.removeProperty("transform");
     track.style.removeProperty("transform");
+    pathsLayer.style.removeProperty("transform");
 
     stageNodes.forEach(({ number, title, text }) => {
       if (number) {
@@ -152,18 +153,15 @@ export function initWorkStagesAnimation() {
 
   const setup = () => {
     destroy();
-    if (window.innerWidth <= 1200) return;
+    if (window.innerWidth < 769) return;
 
-    const maxShift = Math.max(0, inner.scrollWidth - sticky.clientWidth);
-    // Move the heading so its center reaches the block center.
-    const headingDropY = Math.max(0, (viewport.clientHeight - headingWrap.offsetHeight) * 0.5);
+    const availableViewportWidth = Math.max(0, sticky.clientWidth - headingWrap.clientWidth);
+    const maxShift = Math.max(0, viewport.scrollWidth - availableViewportWidth);
+    const stickyHeight = Math.max(sticky.offsetHeight, 1);
+    const stickyTopOffset = Math.max(0, (window.innerHeight - stickyHeight) * 0.5);
 
-    const headingDistance = Math.max(window.innerHeight * 0.45, 360) * WORK_STAGES_SCROLL_MULTIPLIER;
-    const stagesDistance = Math.max(maxShift + window.innerHeight * 1.2, window.innerHeight * 2.2) * WORK_STAGES_SCROLL_MULTIPLIER;
-    const fullDistance = headingDistance + stagesDistance;
-    const headingRatio = headingDistance / fullDistance;
-
-    section.style.height = `${Math.ceil(fullDistance + window.innerHeight * 1.2)}px`;
+    const fullDistance = Math.max(maxShift * WORK_STAGES_SCROLL_MULTIPLIER, window.innerHeight * 1.2);
+    section.style.height = `${Math.ceil(fullDistance + stickyHeight)}px`;
 
     const sequence = createSequence(stageNodes.length, paths.length);
 
@@ -191,64 +189,63 @@ export function initWorkStagesAnimation() {
       }
     });
 
-    headingWrap.style.transform = "translate3d(0, 0, 0)";
     inner.style.transform = "translate3d(0, 0, 0)";
 
+    const applyProgress = (rawProgress) => {
+      const stagesProgress = clamp(rawProgress, 0, 1);
+
+      const x = -maxShift * stagesProgress;
+      inner.style.transform = `translate3d(${x}px, 0, 0)`;
+
+      stageNodes.forEach(({ number, title, text }, index) => {
+        const badgeProgress = getRangeProgress(stagesProgress, sequence.ranges.badge[index], sequence.totalUnits);
+        const titleProgress = getRangeProgress(stagesProgress, sequence.ranges.title[index], sequence.totalUnits);
+        const textProgress = getRangeProgress(stagesProgress, sequence.ranges.text[index], sequence.totalUnits);
+
+        if (number) {
+          const scale = BADGE_START_SCALE + (1 - BADGE_START_SCALE) * badgeProgress;
+          const y = (1 - badgeProgress) * BADGE_OFFSET_Y;
+          number.style.opacity = String(badgeProgress);
+          number.style.transform = `translateY(${y}px) scale(${scale})`;
+        }
+
+        if (title) {
+          title.style.opacity = String(titleProgress);
+          title.style.transform = `translateY(${(1 - titleProgress) * TEXT_OFFSET_Y}px)`;
+        }
+
+        if (text) {
+          text.style.opacity = String(textProgress);
+          text.style.transform = `translateY(${(1 - textProgress) * TEXT_OFFSET_Y}px)`;
+        }
+      });
+
+      paths.forEach((path, index) => {
+        const lineProgress = getRangeProgress(stagesProgress, sequence.ranges.line[index], sequence.totalUnits);
+        const length = pathLengths[index] || 0;
+        const visibleLength = length * lineProgress;
+
+        if (lineProgress >= 0.999) {
+          path.style.strokeDasharray = FIGMA_STAGE_DASH_PATTERN;
+        } else {
+          path.style.strokeDasharray = buildDashedRevealPattern(visibleLength, length);
+        }
+
+        path.style.strokeDashoffset = "0";
+      });
+    };
+
     trigger = runtime.ScrollTrigger.create({
-      trigger: viewport,
-      start: "center center",
+      trigger: section,
+      start: `top top+=${stickyTopOffset}`,
       end: `+=${fullDistance}`,
-      scrub: 0.9,
+      scrub: true,
       invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        const progress = clamp(self.progress, 0, 1);
-
-        const headingProgress = clamp(progress / headingRatio, 0, 1);
-        const stagesProgress = clamp((progress - headingRatio) / (1 - headingRatio), 0, 1);
-
-        headingWrap.style.transform = `translate3d(0, ${headingDropY * headingProgress}px, 0)`;
-
-        const x = -maxShift * stagesProgress;
-        inner.style.transform = `translate3d(${x}px, 0, 0)`;
-
-        stageNodes.forEach(({ number, title, text }, index) => {
-          const badgeProgress = getRangeProgress(stagesProgress, sequence.ranges.badge[index], sequence.totalUnits);
-          const titleProgress = getRangeProgress(stagesProgress, sequence.ranges.title[index], sequence.totalUnits);
-          const textProgress = getRangeProgress(stagesProgress, sequence.ranges.text[index], sequence.totalUnits);
-
-          if (number) {
-            const scale = BADGE_START_SCALE + (1 - BADGE_START_SCALE) * badgeProgress;
-            const y = (1 - badgeProgress) * BADGE_OFFSET_Y;
-            number.style.opacity = String(badgeProgress);
-            number.style.transform = `translateY(${y}px) scale(${scale})`;
-          }
-
-          if (title) {
-            title.style.opacity = String(titleProgress);
-            title.style.transform = `translateY(${(1 - titleProgress) * TEXT_OFFSET_Y}px)`;
-          }
-
-          if (text) {
-            text.style.opacity = String(textProgress);
-            text.style.transform = `translateY(${(1 - textProgress) * TEXT_OFFSET_Y}px)`;
-          }
-        });
-
-        paths.forEach((path, index) => {
-          const lineProgress = getRangeProgress(stagesProgress, sequence.ranges.line[index], sequence.totalUnits);
-          const length = pathLengths[index] || 0;
-          const visibleLength = length * lineProgress;
-
-          if (lineProgress >= 0.999) {
-            path.style.strokeDasharray = FIGMA_STAGE_DASH_PATTERN;
-          } else {
-            path.style.strokeDasharray = buildDashedRevealPattern(visibleLength, length);
-          }
-
-          path.style.strokeDashoffset = "0";
-        });
-      }
+      onRefresh: (self) => applyProgress(self.progress),
+      onUpdate: (self) => applyProgress(self.progress)
     });
+
+    applyProgress(0);
   };
 
   setup();

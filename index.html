@@ -34,10 +34,52 @@
 
           <div class="contacts">
             <a class="contacts__phone" href="tel:+79879499754">+7 (987) 949-97-54</a>
-            <button class="button button--small" type="button">Задать вопрос</button>
+            <button class="button button--small" type="button" data-popup-open>Задать вопрос</button>
+            <button
+              class="burger-button"
+              type="button"
+              data-menu-toggle
+              aria-label="Открыть меню"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+            >
+              <span class="burger-button__line burger-button__line--top"></span>
+              <span class="burger-button__line burger-button__line--middle"></span>
+              <span class="burger-button__line burger-button__line--bottom"></span>
+            </button>
           </div>
         </div>
       </header>
+
+      <div class="mobile-menu" id="mobile-menu" hidden data-mobile-menu>
+        <button class="mobile-menu__backdrop" type="button" data-menu-close aria-label="Закрыть меню"></button>
+        <aside class="mobile-menu__panel" aria-label="Мобильное меню">
+          <div class="mobile-menu__head">
+            <a class="logo mobile-menu__logo" href="#hero" data-menu-link aria-label="1Mesto">
+              <img src="assets/logo.svg" alt="Логотип 1Mesto" />
+            </a>
+            <button class="burger-button burger-button--active" type="button" data-menu-close aria-label="Закрыть меню">
+              <span class="burger-button__line burger-button__line--top"></span>
+              <span class="burger-button__line burger-button__line--middle"></span>
+              <span class="burger-button__line burger-button__line--bottom"></span>
+            </button>
+          </div>
+
+          <nav class="mobile-menu__nav" aria-label="Навигация сайта">
+            <a class="mobile-menu__item" href="#hero" data-menu-link>Главная</a>
+            <a class="mobile-menu__item" href="#benefits" data-menu-link>Услуги</a>
+            <a class="mobile-menu__item" href="#portfolio" data-menu-link>Наши проекты</a>
+            <a class="mobile-menu__item" href="#feedback" data-menu-link>Отзывы</a>
+            <a class="mobile-menu__item" href="#pricing" data-menu-link>Тарифы</a>
+            <a class="mobile-menu__item" href="#contacts" data-menu-link>Контакты</a>
+          </nav>
+
+          <div class="mobile-menu__contacts">
+            <a class="mobile-menu__phone" href="tel:+79879499754">+7 (987) 949-97-54</a>
+            <button class="mobile-menu__cta" type="button" data-popup-open data-menu-close>Задать вопрос</button>
+          </div>
+        </aside>
+      </div>
 
       <main>
         <section class="hero" id="hero">
@@ -56,7 +98,7 @@
                   чтобы&nbsp;Яндекс Карты стали полноценным каналом привлечения клиентов.
                 </p>
               </div>
-              <button class="button button--main" type="button">Получить разбор карточки</button>
+              <button class="button button--main" type="button" data-popup-open>Получить разбор карточки</button>
             </div>
 
             <div class="hero__visual" aria-label="Блок 3D-модели смартфонов">
@@ -234,7 +276,7 @@
                     </ul>
                   </div>
                   <div class="pricing-plan__cta-wrap">
-                    <button class="pricing-plan__cta" type="button">Оставить заявку</button>
+                    <button class="pricing-plan__cta" type="button" data-popup-open>Оставить заявку</button>
                   </div>
                 </div>
               </article>
@@ -258,7 +300,7 @@
                     </ul>
                   </div>
                   <div class="pricing-plan__cta-wrap">
-                    <button class="pricing-plan__cta" type="button">Оставить заявку</button>
+                    <button class="pricing-plan__cta" type="button" data-popup-open>Оставить заявку</button>
                   </div>
                 </div>
               </article>
@@ -282,7 +324,7 @@
                     </ul>
                   </div>
                   <div class="pricing-plan__cta-wrap">
-                    <button class="pricing-plan__cta" type="button">Оставить заявку</button>
+                    <button class="pricing-plan__cta" type="button" data-popup-open>Оставить заявку</button>
                   </div>
                 </div>
               </article>
@@ -584,7 +626,7 @@
             </div>
 
             <div class="portfolio__cta">
-              <button class="portfolio__cta-button" type="button">
+              <button class="portfolio__cta-button" type="button" data-popup-open>
                 <span>Хочу такой же результат</span>
                 <img src="assets/icons/arrow-right.svg" alt="" aria-hidden="true" />
               </button>
@@ -911,6 +953,30 @@
           </div>
         </div>
       </footer>
+
+      <div class="popup-form" hidden data-popup-form aria-hidden="true">
+        <button class="popup-form__backdrop" type="button" data-popup-close aria-label="Закрыть форму"></button>
+        <div class="popup-form__card" role="dialog" aria-modal="true" aria-label="Форма заявки">
+          <div class="popup-form__content">
+            <div class="popup-form__copy">
+              <h2>Получите консультацию по вашему проекту</h2>
+              <p>Разберём текущую ситуацию, оценим потенциал Яндекс Карт и предложим подходящий формат работы.</p>
+            </div>
+
+            <form class="popup-form__fields" action="#" method="post">
+              <label class="field field--popup">
+                <span class="visually-hidden">Имя</span>
+                <input type="text" name="popup-name" placeholder="Имя" />
+              </label>
+              <label class="field field--popup">
+                <span class="visually-hidden">Номер телефона</span>
+                <input type="tel" name="popup-phone" placeholder="Номер телефона" />
+              </label>
+              <button class="popup-form__submit" type="submit">Отправить</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="custom-cursor" aria-hidden="true"></div>
     <div class="custom-cursor-dot" aria-hidden="true"></div>

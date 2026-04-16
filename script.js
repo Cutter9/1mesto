@@ -10,6 +10,31 @@ import { initAdditionalSlider } from "./js/additional-slider.js";
 import { initPortfolioDrum } from "./js/portfolio-drum.js";
 import { initWorkStagesAnimation } from "./js/work-stages.js";
 import { initDisclosureLists } from "./js/disclosure.js";
+import { initOverlayUi } from "./js/overlay-ui.js";
+
+function initScrollTriggerAutoRefresh() {
+  if (!window.ScrollTrigger) return;
+
+  let refreshRaf = null;
+  const requestRefresh = () => {
+    if (refreshRaf !== null) return;
+    refreshRaf = window.requestAnimationFrame(() => {
+      refreshRaf = null;
+      window.ScrollTrigger.refresh();
+    });
+  };
+
+  const lazyImages = Array.from(document.querySelectorAll('img[loading="lazy"]'));
+  lazyImages.forEach((image) => {
+    if (image.complete) return;
+    image.addEventListener("load", requestRefresh, { once: true });
+    image.addEventListener("error", requestRefresh, { once: true });
+  });
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(requestRefresh).catch(() => {});
+  }
+}
 
 function scheduleAtIdle(task, timeout = 1500, fallbackDelay = 320) {
   let started = false;
@@ -87,6 +112,8 @@ initAdditionalSlider();
 initPortfolioDrum();
 initWorkStagesAnimation();
 initDisclosureLists();
+initOverlayUi();
+initScrollTriggerAutoRefresh();
 
 if (window.ScrollTrigger) {
   window.addEventListener(

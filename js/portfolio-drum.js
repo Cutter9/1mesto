@@ -44,89 +44,121 @@ export function initPortfolioDrum() {
   const pin = scrollRoot?.querySelector(".portfolio__drum-pin");
   const drum = scrollRoot?.querySelector("[data-portfolio-track]");
   const cards = Array.from(scrollRoot?.querySelectorAll("[data-portfolio-card]") || []);
-  if (!scrollRoot || !pin || !drum || cards.length < 2) return;
+  const cta = scrollRoot?.closest(".portfolio")?.querySelector(".portfolio__cta");
+  const animatedItems = cta ? [...cards, cta] : cards;
+  if (!scrollRoot || !drum || animatedItems.length < 1) return;
 
   const runtime = getGsapRuntime();
   if (!runtime?.ScrollTrigger || prefersReducedMotion) return;
 
-  let trigger = null;
+  const gsap = runtime.gsap;
+  let sectionTrigger = null;
+  let resizeRaf = null;
 
-  const resetCards = () => {
-    cards.forEach((card) => {
-      card.classList.remove("is-center");
-      card.style.removeProperty("transform");
-      card.style.removeProperty("opacity");
-      card.style.removeProperty("z-index");
-      card.style.removeProperty("filter");
-      card.style.removeProperty("pointer-events");
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const lerp = (from, to, progress) => from + (to - from) * progress;
+
+  const resetAnimatedItems = () => {
+    animatedItems.forEach((item) => {
+      item.classList.remove("is-center");
+      item.style.removeProperty("transform");
+      item.style.removeProperty("opacity");
+      item.style.removeProperty("z-index");
+      item.style.removeProperty("filter");
+      item.style.removeProperty("pointer-events");
     });
   };
 
   const destroy = () => {
-    if (trigger) {
-      trigger.kill();
-      trigger = null;
+    if (sectionTrigger) {
+      sectionTrigger.kill();
+      sectionTrigger = null;
     }
 
     drum.classList.remove("portfolio__drum--animated");
-    pin.style.removeProperty("perspective");
-    scrollRoot.style.removeProperty("height");
-    resetCards();
+    scrollRoot.classList.remove("portfolio__drum-scroll--animated");
+    if (pin) {
+      pin.style.removeProperty("perspective");
+      pin.style.removeProperty("perspective-origin");
+    }
+    resetAnimatedItems();
+  };
+
+  const getRevealProgress = (rect, viewportHeight) => {
+    const startTop = viewportHeight;
+    const endTop = viewportHeight * 0.5 - rect.height * 0.5;
+    const range = Math.max(1, startTop - endTop);
+    return clamp((startTop - rect.top) / range, 0, 1);
+  };
+
+  const renderAnimatedItems = () => {
+    const viewportHeight = Math.max(window.innerHeight || 0, 1);
+
+    animatedItems.forEach((item, index) => {
+      const rect = item.getBoundingClientRect();
+      const rawProgress = getRevealProgress(rect, viewportHeight);
+      const progress = rawProgress <= 0.01 ? 0 : rawProgress >= 0.99 ? 1 : rawProgress;
+
+      // Same geometry, but with half intensity and 60% initial scale.
+      const scale = lerp(0.8, 1, progress);
+      const rotateX = lerp(-32, 0, progress);
+      const z = lerp(-60, 0, progress);
+      const translateY = lerp(46, 0, progress);
+      const opacity = lerp(0.5, 1, progress);
+      const blur = lerp(4.2, 0, progress);
+
+      item.classList.toggle("is-center", progress >= 0.995);
+      item.style.zIndex = String(1000 + Math.round(progress * 100) + index);
+      item.style.pointerEvents = "auto";
+      item.style.opacity = opacity.toFixed(3);
+      item.style.filter = `blur(${blur.toFixed(2)}px)`;
+      item.style.transform =
+        `perspective(1520px) translate3d(0, ${translateY.toFixed(2)}px, ${z.toFixed(2)}px) ` +
+        `rotateX(${rotateX.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+    });
   };
 
   const setup = () => {
     destroy();
 
-    if (window.innerWidth <= 1200) return;
+    if (window.innerWidth <= 991) return;
 
-    drum.classList.add("portfolio__drum--animated");
-    pin.style.perspective = "2200px";
+    scrollRoot.classList.add("portfolio__drum-scroll--animated");
 
-    const cardStep = pin.offsetHeight * 0.58;
-    const totalDistance = Math.max(window.innerHeight * 1.8, cardStep * (cards.length - 1) + window.innerHeight * 0.6);
-    scrollRoot.style.height = `${Math.ceil(totalDistance + pin.offsetHeight)}px`;
-
-    const render = (progress) => {
-      const position = progress * (cards.length - 1);
-
-      cards.forEach((card, index) => {
-        const relative = index - position;
-        const abs = Math.abs(relative);
-
-        const y = relative * cardStep;
-        const scale = relative >= 0 ? 1 + Math.min(relative * 0.05, 0.12) : 1 - Math.min(abs * 0.14, 0.38);
-        const rotateX = relative >= 0 ? -Math.min(relative * 12, 24) : Math.min(abs * 13, 24);
-        const z = relative >= 0 ? Math.min(relative * 120, 220) : -Math.min(abs * 160, 280);
-        const opacity = Math.max(0, 1 - abs * 0.46);
-        const blur = Math.min(abs * 1.8, 4.5);
-        const isCenter = abs < 0.52;
-
-        card.classList.toggle("is-center", isCenter);
-        card.style.opacity = opacity.toFixed(3);
-        card.style.filter = `blur(${blur.toFixed(2)}px)`;
-        card.style.zIndex = String(1000 - Math.round(abs * 120));
-        card.style.pointerEvents = isCenter ? "auto" : "none";
-        card.style.transform =
-          `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) ` +
-          `rotateX(${rotateX.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+    animatedItems.forEach((item) => {
+      gsap.set(item, {
+        transformOrigin: "50% 50%",
+        transformStyle: "preserve-3d",
+        force3D: true,
+        pointerEvents: "auto"
       });
-    };
-
-    trigger = runtime.ScrollTrigger.create({
-      trigger: scrollRoot,
-      start: "top top+=80",
-      end: `+=${totalDistance}`,
-      scrub: 0.85,
-      pin,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        render(self.progress);
-      }
     });
 
-    render(0);
+    sectionTrigger = runtime.ScrollTrigger.create({
+      trigger: scrollRoot.closest(".portfolio") || scrollRoot,
+      start: "top bottom",
+      end: "bottom top",
+      invalidateOnRefresh: true,
+      onEnter: renderAnimatedItems,
+      onEnterBack: renderAnimatedItems,
+      onLeave: renderAnimatedItems,
+      onLeaveBack: renderAnimatedItems,
+      onUpdate: renderAnimatedItems,
+      onRefresh: renderAnimatedItems
+    });
+
+    renderAnimatedItems();
+    runtime.ScrollTrigger.refresh();
   };
 
   setup();
-  window.addEventListener("resize", setup);
+  window.addEventListener("resize", () => {
+    if (resizeRaf !== null) {
+      window.cancelAnimationFrame(resizeRaf);
+    }
+    resizeRaf = window.requestAnimationFrame(() => {
+      resizeRaf = null;
+      setup();
+    });
+  });
 }

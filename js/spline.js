@@ -1,14 +1,7 @@
-import { isLikelyLowPerformanceDevice } from "./utils.js";
+import { prefersReducedMotion } from "./utils.js";
 
 const SCENE_URL = "https://prod.spline.design/5c4BvsNCkwBZLz43/scene.splinecode";
 const CAMERA_NAME = "Personal Camera";
-
-const SOFTWARE_RENDERER_PATTERNS = [
-  /swiftshader/i,
-  /software/i,
-  /llvmpipe/i,
-  /microsoft basic render driver/i
-];
 
 function applySplineFallback(canvas) {
   const splineWrap = canvas.closest(".hero__spline-wrap");
@@ -19,29 +12,24 @@ function applySplineFallback(canvas) {
   canvas.setAttribute("aria-hidden", "true");
 }
 
-function hasSoftwareRenderer() {
-  const probeCanvas = document.createElement("canvas");
-  const gl = probeCanvas.getContext("webgl") || probeCanvas.getContext("experimental-webgl");
-
-  if (!gl) return true;
-
-  const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-  const renderer = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "";
-
-  return SOFTWARE_RENDERER_PATTERNS.some((pattern) => pattern.test(renderer));
-}
-
 export async function initHeroSpline() {
   const canvas = document.getElementById("hero-spline-canvas");
   if (!canvas) return;
 
-  if (isLikelyLowPerformanceDevice() || hasSoftwareRenderer()) {
+  if (prefersReducedMotion) {
     applySplineFallback(canvas);
     return;
   }
 
   try {
-    const { Application } = await import("https://unpkg.com/@splinetool/runtime/build/runtime.js");
+    let runtimeModule = null;
+    try {
+      runtimeModule = await import("https://cdn.jsdelivr.net/npm/@splinetool/runtime/build/runtime.js");
+    } catch (_firstError) {
+      runtimeModule = await import("https://unpkg.com/@splinetool/runtime/build/runtime.js");
+    }
+
+    const { Application } = runtimeModule;
 
     const app = new Application(canvas);
     await app.load(SCENE_URL);
@@ -65,6 +53,7 @@ export async function initHeroSpline() {
     document.addEventListener("visibilitychange", visibilityHandler, { passive: true });
     visibilityHandler();
   } catch (error) {
+    // Fallback only when runtime/scene load actually failed.
     applySplineFallback(canvas);
     console.error("[Spline] Failed to initialize runtime scene:", error);
   }
