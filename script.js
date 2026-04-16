@@ -6,6 +6,10 @@ import { initHeaderScrollState } from "./js/header-scroll.js";
 import { initPrinciplesCarousel } from "./js/principles-carousel.js";
 import { initBrandBlockReveal } from "./js/brand-block-reveal.js";
 import { initBrandBlockAutoscale } from "./js/brand-block-autoscale.js";
+import { initAdditionalSlider } from "./js/additional-slider.js";
+import { initPortfolioDrum } from "./js/portfolio-drum.js";
+import { initWorkStagesAnimation } from "./js/work-stages.js";
+import { initDisclosureLists } from "./js/disclosure.js";
 
 function scheduleAtIdle(task, timeout = 1500, fallbackDelay = 320) {
   let started = false;
@@ -79,6 +83,20 @@ scheduleHeroSplineInit();
 initBrandBlockAutoscale();
 initHeaderScrollState();
 initRevealCards();
+initAdditionalSlider();
+initPortfolioDrum();
+initWorkStagesAnimation();
+initDisclosureLists();
+
+if (window.ScrollTrigger) {
+  window.addEventListener(
+    "load",
+    () => {
+      window.ScrollTrigger.refresh();
+    },
+    { once: true }
+  );
+}
 
 scheduleAtIdle(() => {
   initSmoothScroll();

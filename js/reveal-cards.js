@@ -1,8 +1,28 @@
 import { clamp } from "./utils.js";
+import { getGsapRuntime } from "./gsap-runtime.js";
 
 export function initRevealCards() {
   const cards = document.querySelectorAll("[data-reveal-card]");
   if (!cards.length) return;
+
+  const runtime = getGsapRuntime();
+  if (runtime?.ScrollTrigger) {
+    cards.forEach((card) => {
+      card.style.setProperty("--reveal", "0");
+
+      runtime.ScrollTrigger.create({
+        trigger: card,
+        start: "top 92%",
+        end: "top 50%",
+        scrub: true,
+        onUpdate: (self) => {
+          card.style.setProperty("--reveal", self.progress.toFixed(3));
+        }
+      });
+    });
+
+    return;
+  }
 
   let ticking = false;
 

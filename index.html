@@ -11,23 +11,25 @@
     <link rel="preload" href="assets/fonts/FindSansPro-Medium.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="assets/fonts/FindSansPro-Bold.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="styles.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <script type="module" src="script.js"></script>
   </head>
   <body>
     <div class="page">
       <header class="header">
         <div class="header__inner">
-          <a class="logo" href="#" aria-label="1Mesto">
+          <a class="logo" href="#hero" aria-label="1Mesto">
             <img src="assets/logo.svg" alt="Логотип 1Mesto" />
           </a>
 
           <nav class="nav" aria-label="Основное меню">
-            <a class="nav__item" href="#">Главная</a>
-            <a class="nav__item" href="#">Услуги</a>
-            <a class="nav__item" href="#">Наши проекты</a>
-            <a class="nav__item" href="#">Отзывы</a>
-            <a class="nav__item" href="#">Тарифы</a>
-            <a class="nav__item" href="#">Контакты</a>
+            <a class="nav__item" href="#hero">Главная</a>
+            <a class="nav__item" href="#benefits">Услуги</a>
+            <a class="nav__item" href="#portfolio">Наши проекты</a>
+            <a class="nav__item" href="#feedback">Отзывы</a>
+            <a class="nav__item" href="#pricing">Тарифы</a>
+            <a class="nav__item" href="#contacts">Контакты</a>
           </nav>
 
           <div class="contacts">
@@ -38,7 +40,7 @@
       </header>
 
       <main>
-        <section class="hero">
+        <section class="hero" id="hero">
           <div class="hero__inner">
             <div class="hero__content">
               <div class="hero__text">
@@ -66,7 +68,7 @@
           </div>
         </section>
 
-        <section class="benefits" aria-label="Преимущества продвижения в Яндекс Картах">
+        <section class="benefits" id="benefits" aria-label="Преимущества продвижения в Яндекс Картах">
           <div class="benefits__inner">
             <div class="benefits__heading">
               <h2>Почему <span class="text-accent-red">Яндекс Карты</span> — это рабочий канал привлечения клиентов</h2>
@@ -129,6 +131,32 @@
           </div>
         </section>
 
+        <section class="cta cta--top" aria-label="Консультация по проекту">
+          <div class="cta__inner">
+            <div class="cta__card cta__card--top">
+              <div class="cta__content cta__content--wide">
+                <div class="cta__copy">
+                  <h2>Получите консультацию по вашему проекту</h2>
+                  <p>
+                    Разберём текущую ситуацию, оценим потенциал Яндекс Карт и предложим подходящий формат работы.
+                  </p>
+                </div>
+                <form class="cta__form cta__form--row" action="#" method="post">
+                  <label class="field field--dark">
+                    <span class="visually-hidden">Имя</span>
+                    <input type="text" name="name" placeholder="Имя" />
+                  </label>
+                  <label class="field field--dark">
+                    <span class="visually-hidden">Номер телефона</span>
+                    <input type="tel" name="phone" placeholder="Номер телефона" />
+                  </label>
+                  <button class="cta__submit cta__submit--green" type="submit">Отправить</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="audience" aria-label="Кому полезно продвижение на Яндекс Картах">
           <div class="audience__inner">
             <h2 class="audience__title">
@@ -183,7 +211,7 @@
           </div>
         </section>
 
-        <section class="pricing" aria-label="Тарифы">
+        <section class="pricing" id="pricing" aria-label="Тарифы">
           <div class="pricing__inner">
             <h2 class="pricing__title">Тарифы</h2>
             <div class="pricing__plans">
@@ -262,13 +290,627 @@
           </div>
         </section>
 
-        <section class="additional-services" aria-label="Дополнительные услуги">
+        <section class="additional-services" aria-label="Дополнительные решения">
           <div class="additional-services__inner">
-            <h2 class="additional-services__title">Дополнительные услуги</h2>
-            <div class="additional-services__content" aria-hidden="true"></div>
+            <h2 class="additional-services__title">Дополнительные решения</h2>
+            <div class="additional-slider" data-additional-slider>
+              <div class="additional-slider__viewport">
+                <div class="additional-slider__track">
+                  <article class="additional-card">
+                    <div class="additional-card__content">
+                      <h3>Консультация по Яндекс Картам</h3>
+                      <p>
+                        Разбираем текущую карточку, находим точки роста и даём понятные рекомендации по улучшению.
+                      </p>
+                    </div>
+                    <img src="assets/Additional/Laptop.webp" alt="Ноутбук" loading="lazy" decoding="async" />
+                  </article>
+
+                  <article class="additional-card">
+                    <div class="additional-card__content">
+                      <h3>Мини-фильм о компании</h3>
+                      <p>
+                        Показываем атмосферу, сервис и сильные стороны бизнеса через короткий имиджевый ролик для
+                        карточки компании.
+                      </p>
+                    </div>
+                    <img src="assets/Additional/Camera.webp" alt="Камера" loading="lazy" decoding="async" />
+                  </article>
+
+                  <article class="additional-card">
+                    <div class="additional-card__content">
+                      <h3>Внедрение коллтрекинга</h3>
+                      <p>
+                        Настраиваем отслеживание звонков, чтобы вы понимали, откуда приходят обращения и какие каналы
+                        работают лучше.
+                      </p>
+                    </div>
+                    <img src="assets/Additional/Phone.webp" alt="Смартфон" loading="lazy" decoding="async" />
+                  </article>
+
+                  <article class="additional-card">
+                    <div class="additional-card__content">
+                      <h3>Лидогенерация</h3>
+                      <p>
+                        Подключаем рекламу и сайт в связке, чтобы бизнес получал больше целевых обращений.
+                      </p>
+                    </div>
+                    <img src="assets/Additional/Message.webp" alt="Иконка сообщений" loading="lazy" decoding="async" />
+                  </article>
+                </div>
+              </div>
+
+              <div class="slider-arrows" aria-label="Управление слайдером дополнительных решений">
+                <button class="slider-arrow" data-additional-prev type="button" aria-label="Предыдущий слайд"></button>
+                <button class="slider-arrow" data-additional-next type="button" aria-label="Следующий слайд"></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="portfolio" id="portfolio" aria-label="Портфолио">
+          <div class="portfolio__inner">
+            <h2 class="portfolio__title">Портфолио</h2>
+
+            <div class="portfolio__drum-scroll" data-portfolio-drum>
+              <div class="portfolio__drum-pin">
+                <div class="portfolio__drum" data-portfolio-track>
+                  <article class="portfolio-card" data-portfolio-card>
+                    <div class="portfolio-card__about">
+                      <div class="portfolio-card__description">
+                        <h3>Продвижение магазина пиломатериалов «Северная Лесная Компания» в Самаре</h3>
+                        <p>
+                          Помимо продвижения в геосервисах, для этого клиента мы вели комплексный проект: от создания
+                          интернет-магазина под ключ до контекстной рекламы и SMM.
+                        </p>
+                      </div>
+
+                      <ul class="portfolio-card__stats">
+                        <li><span>х3,7</span> Посещений карточки</li>
+                        <li><span>х4</span> Звонков</li>
+                        <li><span>х23</span> Построенных маршрутов</li>
+                      </ul>
+                    </div>
+
+                    <div class="portfolio-image" data-before-after>
+                      <div class="portfolio-image__badges">
+                        <span class="portfolio-image__badge portfolio-image__badge--state" data-before-after-label>Было</span>
+                        <span class="portfolio-image__badge portfolio-image__badge--city">Самара</span>
+                      </div>
+                      <div class="portfolio-image__controls">
+                        <button
+                          type="button"
+                          class="slider-arrow"
+                          data-before-after-prev
+                          aria-label="Показать предыдущую версию"
+                        ></button>
+                        <button
+                          type="button"
+                          class="slider-arrow"
+                          data-before-after-next
+                          aria-label="Показать следующую версию"
+                        ></button>
+                      </div>
+                      <div class="portfolio-image__slides">
+                        <img
+                          src="assets/Projects/Пиломатериалы 1.jpg"
+                          alt="Пиломатериалы — было"
+                          data-before-after-slide="before"
+                          class="is-active"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <img
+                          src="assets/Projects/Пиломатериалы 2.jpg"
+                          alt="Пиломатериалы — стало"
+                          data-before-after-slide="after"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="portfolio-card" data-portfolio-card>
+                    <div class="portfolio-card__about">
+                      <div class="portfolio-card__description">
+                        <h3>Продвижение спортивной экипировки</h3>
+                        <p>
+                          Это был долгосрочный проект, где системное ведение и активная работа с отзывами дали большой
+                          результат.
+                        </p>
+                      </div>
+
+                      <ul class="portfolio-card__stats">
+                        <li><span>х4,5</span> Посещений карточки</li>
+                        <li><span>х5</span> Звонков</li>
+                        <li><span>х10</span> Построенных маршрутов</li>
+                      </ul>
+                    </div>
+
+                    <div class="portfolio-image" data-before-after>
+                      <div class="portfolio-image__badges">
+                        <span class="portfolio-image__badge portfolio-image__badge--state" data-before-after-label>Было</span>
+                        <span class="portfolio-image__badge portfolio-image__badge--city">Самара</span>
+                      </div>
+                      <div class="portfolio-image__controls">
+                        <button
+                          type="button"
+                          class="slider-arrow"
+                          data-before-after-prev
+                          aria-label="Показать предыдущую версию"
+                        ></button>
+                        <button
+                          type="button"
+                          class="slider-arrow"
+                          data-before-after-next
+                          aria-label="Показать следующую версию"
+                        ></button>
+                      </div>
+                      <div class="portfolio-image__slides">
+                        <img
+                          src="assets/Projects/Экипировка 1.jpg"
+                          alt="Спортивная экипировка — было"
+                          data-before-after-slide="before"
+                          class="is-active"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <img
+                          src="assets/Projects/Экипировка 2.jpg"
+                          alt="Спортивная экипировка — стало"
+                          data-before-after-slide="after"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="portfolio-card" data-portfolio-card>
+                    <div class="portfolio-card__about">
+                      <div class="portfolio-card__description">
+                        <h3>Продвижение барбершопа «Ла Зона», создание премиум дизайна</h3>
+                        <p>
+                          В этом проекте акцент сделали на визуальной подаче заведения в Яндекс Картах. Важно было
+                          показать, что барбершоп работает для аудитории сегментов средний+ и люкс.
+                        </p>
+                      </div>
+
+                      <ul class="portfolio-card__stats">
+                        <li><span>х5</span> Посещений карточки</li>
+                        <li><span>х4</span> Звонков</li>
+                        <li><span>х4,8</span> Построенных маршрутов</li>
+                      </ul>
+                    </div>
+
+                    <div class="portfolio-image" data-before-after>
+                      <div class="portfolio-image__badges">
+                        <span class="portfolio-image__badge portfolio-image__badge--state" data-before-after-label>Было</span>
+                        <span class="portfolio-image__badge portfolio-image__badge--city">Самара</span>
+                      </div>
+                      <div class="portfolio-image__controls">
+                        <button
+                          type="button"
+                          class="slider-arrow"
+                          data-before-after-prev
+                          aria-label="Показать предыдущую версию"
+                        ></button>
+                        <button
+                          type="button"
+                          class="slider-arrow"
+                          data-before-after-next
+                          aria-label="Показать следующую версию"
+                        ></button>
+                      </div>
+                      <div class="portfolio-image__slides">
+                        <img
+                          src="assets/Projects/Барбер 1.jpg"
+                          alt="Барбершоп — было"
+                          data-before-after-slide="before"
+                          class="is-active"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <img
+                          src="assets/Projects/Барбер 2.jpg"
+                          alt="Барбершоп — стало"
+                          data-before-after-slide="after"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="portfolio-card" data-portfolio-card>
+                    <div class="portfolio-card__about">
+                      <div class="portfolio-card__description">
+                        <h3>Продвижение отеля на Яндекс Картах и работа с отзывами</h3>
+                        <p>
+                          Репутационный проект с потоком 60+ отзывов в месяц. Основной фокус — работа с негативом,
+                          отзывами от конкурентов и системная обработка базы. Рост по показателям был небольшим, но
+                          ощутимым.
+                        </p>
+                      </div>
+
+                      <ul class="portfolio-card__stats">
+                        <li><span>+0,1</span> Рост рейтинга (2000+ отзывов)</li>
+                        <li><span>+11%</span> Звонков (+135)</li>
+                        <li><span>+3%</span> Построенных маршрутов (+520)</li>
+                      </ul>
+                    </div>
+
+                    <div class="portfolio-image" data-before-after>
+                      <div class="portfolio-image__badges">
+                        <span class="portfolio-image__badge portfolio-image__badge--state" data-before-after-label>Было</span>
+                        <span class="portfolio-image__badge portfolio-image__badge--city">Самара</span>
+                      </div>
+                      <div class="portfolio-image__controls">
+                        <button
+                          type="button"
+                          class="slider-arrow"
+                          data-before-after-prev
+                          aria-label="Показать предыдущую версию"
+                        ></button>
+                        <button
+                          type="button"
+                          class="slider-arrow"
+                          data-before-after-next
+                          aria-label="Показать следующую версию"
+                        ></button>
+                      </div>
+                      <div class="portfolio-image__slides">
+                        <img
+                          src="assets/Projects/Отель 1.jpg"
+                          alt="Отель — было"
+                          data-before-after-slide="before"
+                          class="is-active"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <img
+                          src="assets/Projects/Отель 2.jpg"
+                          alt="Отель — стало"
+                          data-before-after-slide="after"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+
+            <div class="portfolio__cta">
+              <button class="portfolio__cta-button" type="button">
+                <span>Хочу такой же результат</span>
+                <img src="assets/icons/arrow-right.svg" alt="" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="work-stages" data-work-stages aria-label="Этапы работы над проектом">
+          <div class="work-stages__sticky">
+            <div class="work-stages__inner">
+              <div class="work-stages__heading-wrap">
+                <h2 class="work-stages__heading">
+                  Этапы работы над проектом в <span class="text-accent-red">Яндекс Картах</span>
+                </h2>
+              </div>
+
+              <div class="work-stages__viewport">
+                <svg class="work-stages__paths" viewBox="0 0 2940 550" preserveAspectRatio="none" aria-hidden="true">
+                  <path
+                    data-stage-path
+                    d="M 77.40921783447266 0 C 77.40921783447266 0 71.4091796875 232 139.4093017578125 250 C 207.409423828125 268 277.90916442871094 235 247.40933227539062 158.5 C 216.9095001220703 82 28.925312757492065 90.5465316772461 3.4092814922332764 172 C -14.7349693775177 229.92092895507812 42.72738265991211 284.0385055541992 100.40930938720703 325 C 202.69952392578125 397.63904571533203 286.8404846191406 306.1112937927246 419.40936279296875 287 C 544.1193237304688 269.0216579437256 740.4094848632812 319.5 740.4094848632812 319.5"
+                    transform="translate(35 151)"
+                  />
+                  <path
+                    data-stage-path
+                    d="M 78.23257446289062 328.4996643066406 C 78.23257446289062 328.4996643066406 187.23197174072266 219.99957275390625 66.7325439453125 193.49957275390625 C -53.766883850097656 166.99957275390625 13.2315673828125 24.499576568603516 78.23279571533203 60.499576568603516 C 143.23402404785156 96.49957656860352 258.2318420410156 -48.501953125 336.230712890625 30.498046875 C 414.2295837402344 109.498046875 402.1618347167969 106.61129379272461 534.730712890625 87.5 C 659.440673828125 69.52165794372559 764.230712890625 0 764.230712890625 0"
+                    transform="translate(783 71)"
+                  />
+                  <path
+                    data-stage-path
+                    d="M 51.633358001708984 0 C 51.633358001708984 0 -40.2568416595459 154.75978088378906 21.13347816467285 211 C 67.04872703552246 253.0633659362793 123.05444717407227 262.6294183731079 185.133544921875 267.5 C 258.96356201171875 273.2925314903259 389.133544921875 227.5 474.133544921875 236 C 559.133544921875 244.5 505.1333923339844 334 480.633544921875 352.5 C 456.1336975097656 371 356.6337890625 344.5 385.633544921875 293 C 414.63330078125 241.5 708.6329956054688 344.5 708.6329956054688 344.5"
+                    transform="translate(1589 152)"
+                  />
+                </svg>
+
+                <div class="work-stages__track" data-stage-track>
+                  <article class="work-stage" data-stage="1">
+                    <div class="work-stage__number">01</div>
+                    <div class="work-stage__desc">
+                      <h3>Заявка</h3>
+                      <p>Оставляете заявку удобным способом — через сайт, Telegram или VK.</p>
+                    </div>
+                  </article>
+
+                  <article class="work-stage work-stage--bottom" data-stage="2">
+                    <div class="work-stage__number">02</div>
+                    <div class="work-stage__desc">
+                      <h3>Консультация и договор</h3>
+                      <p>Обсуждаем задачу, отвечаем на вопросы, согласовываем условия и оформляем договор.</p>
+                    </div>
+                  </article>
+
+                  <article class="work-stage" data-stage="3">
+                    <div class="work-stage__number">03</div>
+                    <div class="work-stage__desc">
+                      <h3>Оплата и старт работ</h3>
+                      <p>После оплаты запускаем проект и начинаем работу по согласованному плану.</p>
+                    </div>
+                  </article>
+
+                  <article class="work-stage work-stage--bottom" data-stage="4">
+                    <div class="work-stage__number">04</div>
+                    <div class="work-stage__desc">
+                      <h3>Отчётность и планирование</h3>
+                      <p>Держим в курсе по этапам и согласовываем следующий план развития карточки.</p>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="feedback" id="feedback" aria-label="Отзывы">
+          <div class="feedback__inner">
+            <h2 class="feedback__title">Отзывы</h2>
+
+            <div class="feedback__grid">
+              <article class="feedback-card">
+                <div class="feedback-card__about">
+                  <h3>Николай, совладелец агентства «Маркетинговый комбинат»</h3>
+                  <p>Серия консультаций по Яндекс Картам и рекламе в Яндекс Бизнес</p>
+                </div>
+                <div class="feedback-card__video">
+                  <img
+                    src="assets/nano-banana-2_Adapt_this_portrait_to_match_a_clean_website_color_palette_in_soft_light_green_o-0.jpg"
+                    alt="Видео-отзыв Николая"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="disclosure" data-disclosure-item>
+                  <button class="disclosure__button" type="button" data-disclosure>
+                    <span>Текстовая расшифровка отзыва</span>
+                    <span class="disclosure__icon" aria-hidden="true"></span>
+                  </button>
+                  <div class="disclosure__panel" data-disclosure-panel hidden>
+                    <p>
+                      Игорь, спасибо тебе за консультацию. Посмотрели несколько наших проектов, подсветил все
+                      возможности, где можно усилиться, как с точки зрения рекламы, так с точки зрения SEO. Большое
+                      человеческое спасибо, много интересного передал уже в работу. Только положительные моменты по
+                      консультации.
+                    </p>
+                    <p>
+                      Рекомендую всем, у кого есть вопросы по Яндекс.Картам и продвижению в картах, в принципе,
+                      обращайтесь к Игорю Глазковскому. Я думаю, что он решит ваш вопрос.
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="feedback-card">
+                <div class="feedback-card__about">
+                  <h3>Пётр, владелец студии коррекции фигуры «Кузница Тела»</h3>
+                  <p>Ведение проекта на картах</p>
+                </div>
+                <div class="feedback-card__video">
+                  <img
+                    src="assets/nano-banana-2_Adapt_this_portrait_to_match_a_clean_website_color_palette_in_soft_light_green_o-0.jpg"
+                    alt="Видео-отзыв Петра"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="disclosure" data-disclosure-item>
+                  <button class="disclosure__button" type="button" data-disclosure>
+                    <span>Текстовая расшифровка отзыва</span>
+                    <span class="disclosure__icon" aria-hidden="true"></span>
+                  </button>
+                  <div class="disclosure__panel" data-disclosure-panel hidden>
+                    <p>
+                      Всем привет. Меня зовут Пётр. Я хочу оставить свой отзыв о работе с Игорем. У меня своя
+                      оффлайн-точка, студия ручной коррекции фигуры и массажа. Обратился к Игорю, как к специалисту,
+                      который поможет мне развить карточку на Яндекс.Картах.
+                    </p>
+                    <p>
+                      Работой я очень доволен, это заметили и мои клиенты. Карточка стала лучше, выглядит солиднее.
+                      Каждые три дня мне присылали подробный отчёт по выполненным шагам. Однозначно рекомендую и буду
+                      сотрудничать дальше.
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="feedback-card">
+                <div class="feedback-card__about">
+                  <h3>Антон, руководитель digital-агентства X5 Fitness Marketing</h3>
+                  <p>Консультация по Яндекс Картам</p>
+                </div>
+                <div class="feedback-card__video">
+                  <img
+                    src="assets/nano-banana-2_Adapt_this_portrait_to_match_a_clean_website_color_palette_in_soft_light_green_o-0.jpg"
+                    alt="Видео-отзыв Антона"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="disclosure" data-disclosure-item>
+                  <button class="disclosure__button" type="button" data-disclosure>
+                    <span>Текстовая расшифровка отзыва</span>
+                    <span class="disclosure__icon" aria-hidden="true"></span>
+                  </button>
+                  <div class="disclosure__panel" data-disclosure-panel hidden>
+                    <p>
+                      Добрый день, Игорь. Спасибо тебе большое за проведённую сессию по Яндекс.Картам. Я для себя
+                      получил несколько ценных инсайтов по продвижению и по методике работы с картами.
+                    </p>
+                    <p>
+                      Спасибо тебе за дополнительные материалы по работе с картами — это было ценно и полезно.
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="cta cta--bottom" aria-label="Запрос консультации">
+          <div class="cta__inner">
+            <div class="cta__card cta__card--bottom">
+              <div class="cta__content">
+                <div class="cta__copy">
+                  <h2>Получите консультацию по вашему проекту</h2>
+                  <p>
+                    Разберём текущую ситуацию, оценим потенциал Яндекс Карт и предложим подходящий формат работы.
+                  </p>
+                </div>
+                <form class="cta__form cta__form--column" action="#" method="post">
+                  <label class="field field--light">
+                    <span class="visually-hidden">Имя</span>
+                    <input type="text" name="name-bottom" placeholder="Имя" />
+                  </label>
+                  <label class="field field--light">
+                    <span class="visually-hidden">Номер телефона</span>
+                    <input type="tel" name="phone-bottom" placeholder="Номер телефона" />
+                  </label>
+                  <button class="cta__submit cta__submit--dark" type="submit">Отправить</button>
+                </form>
+              </div>
+
+              <div class="cta__visual">
+                <img src="assets/Avatar_CTA.jpg" alt="Консультант 1 Место" loading="lazy" decoding="async" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="faq" aria-label="Ответы на часто задаваемые вопросы">
+          <div class="faq__inner">
+            <h2 class="faq__title">Ответы на часто задаваемые вопросы</h2>
+
+            <div class="faq__grid">
+              <article class="faq-item" data-disclosure-item>
+                <button class="faq-item__button" type="button" data-disclosure>
+                  <span>Как начать работу, если у меня нет доступов?</span>
+                  <span class="disclosure__icon" aria-hidden="true"></span>
+                </button>
+                <div class="faq-item__panel" data-disclosure-panel hidden>
+                  <p>
+                    Мы поможем восстановить или корректно получить доступы к карточке. Если доступов нет совсем,
+                    подготовим безопасный сценарий запуска с нуля.
+                  </p>
+                </div>
+              </article>
+
+              <article class="faq-item" data-disclosure-item>
+                <button class="faq-item__button" type="button" data-disclosure>
+                  <span>Подойдёт ли продвижение на Яндекс Картах именно моему бизнесу?</span>
+                  <span class="disclosure__icon" aria-hidden="true"></span>
+                </button>
+                <div class="faq-item__panel" data-disclosure-panel hidden>
+                  <p>
+                    В большинстве локальных ниш — да. На консультации мы проверим потенциал вашей карточки и покажем,
+                    где реально получить рост обращений.
+                  </p>
+                </div>
+              </article>
+
+              <article class="faq-item" data-disclosure-item>
+                <button class="faq-item__button" type="button" data-disclosure>
+                  <span>Когда появятся первые результаты?</span>
+                  <span class="disclosure__icon" aria-hidden="true"></span>
+                </button>
+                <div class="faq-item__panel" data-disclosure-panel hidden>
+                  <p>
+                    Обычно первые заметные изменения видны в течение 1–3 месяцев: рост показов, звонков, маршрутов и
+                    активности в карточке.
+                  </p>
+                </div>
+              </article>
+
+              <article class="faq-item" data-disclosure-item>
+                <button class="faq-item__button" type="button" data-disclosure>
+                  <span>Подходит ли это для бизнеса с несколькими филиалами?</span>
+                  <span class="disclosure__icon" aria-hidden="true"></span>
+                </button>
+                <div class="faq-item__panel" data-disclosure-panel hidden>
+                  <p>
+                    Да, для сетевого бизнеса это особенно важно. Мы выстраиваем единый стандарт и масштабируем
+                    работу по всем филиалам.
+                  </p>
+                </div>
+              </article>
+
+              <article class="faq-item" data-disclosure-item>
+                <button class="faq-item__button" type="button" data-disclosure>
+                  <span>Зачем нужно продвижение, если компания уже есть на Яндекс Картах?</span>
+                  <span class="disclosure__icon" aria-hidden="true"></span>
+                </button>
+                <div class="faq-item__panel" data-disclosure-panel hidden>
+                  <p>
+                    Просто присутствие в Картах не даёт максимум результата. Важны оформление, SEO, отзывы, контент и
+                    регулярная работа с карточкой.
+                  </p>
+                </div>
+              </article>
+
+              <article class="faq-item" data-disclosure-item>
+                <button class="faq-item__button" type="button" data-disclosure>
+                  <span>Что входит в продвижение на Яндекс Картах?</span>
+                  <span class="disclosure__icon" aria-hidden="true"></span>
+                </button>
+                <div class="faq-item__panel" data-disclosure-panel hidden>
+                  <p>
+                    Оптимизация карточки, работа с репутацией, контент и фото, аналитика и регулярная отчётность по
+                    ключевым метрикам.
+                  </p>
+                </div>
+              </article>
+            </div>
           </div>
         </section>
       </main>
+
+      <footer class="footer" id="contacts">
+        <div class="footer__inner">
+          <div class="footer__top">
+            <div class="footer__col footer__col--contacts">
+              <a href="tel:+79879499754" class="footer__phone">+7 (987) 949-97-54</a>
+              <a href="mailto:info@1mesto-marketing.ru" class="footer__meta">info@1mesto-marketing.ru</a>
+              <p class="footer__meta">198206, г. Санкт-Петербург, Петергофское ш., 74, корп. 4Б</p>
+            </div>
+
+            <a class="footer__logo" href="#hero" aria-label="1Mesto">
+              <img src="assets/logo.svg" alt="Логотип 1Mesto" />
+            </a>
+
+            <div class="footer__col footer__col--policy">
+              <p class="footer__copy">© 2023 — 2026 Первое место</p>
+              <a href="#" class="footer__link">Согласие на обработку персональных данных</a>
+              <div class="footer__socials">
+                <a href="#" class="footer__social footer__social--tg" aria-label="Telegram">TG</a>
+                <a href="#" class="footer__social footer__social--vk" aria-label="VK">VK</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer__divider" aria-hidden="true"></div>
+
+          <div class="footer__bottom">
+            <p>Самозанятый<br />ГЛОСКОВСКИЙ ИГОРЬ ВЯЧЕСЛАВОВИЧ</p>
+            <p>ИНН 631627192010</p>
+            <p>Маркетинговое агентство<br />«1 Место»</p>
+          </div>
+        </div>
+      </footer>
     </div>
     <div class="custom-cursor" aria-hidden="true"></div>
     <div class="custom-cursor-dot" aria-hidden="true"></div>

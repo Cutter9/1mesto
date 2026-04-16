@@ -1,4 +1,5 @@
 import { clamp, prefersReducedMotion } from "./utils.js";
+import { getGsapRuntime } from "./gsap-runtime.js";
 
 function normalizeLine(line) {
   return line.replace(/[\t\r\n]+/g, " ").replace(/ {2,}/g, " ").trim();
@@ -90,7 +91,7 @@ export function initBrandBlockReveal() {
     return;
   }
 
-  let ticking = false;
+  const runtime = getGsapRuntime();
 
   const paintGroup = (group, progress) => {
     const totalChars = group.length;
@@ -116,6 +117,25 @@ export function initBrandBlockReveal() {
       paintGroup(group, groupProgress);
     });
   };
+
+  if (runtime?.ScrollTrigger) {
+    paintByProgress(0);
+
+    runtime.ScrollTrigger.create({
+      trigger: section,
+      start: "top bottom",
+      end: "center center",
+      scrub: true,
+      onUpdate: (self) => {
+        const progress = Math.pow(self.progress, 1.18);
+        paintByProgress(progress);
+      }
+    });
+
+    return;
+  }
+
+  let ticking = false;
 
   const updateProgress = () => {
     const rect = section.getBoundingClientRect();
