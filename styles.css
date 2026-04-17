@@ -151,7 +151,7 @@ main {
 }
 
 main > section + section {
-  margin-top: 0;
+  margin-top: var(--section-gap);
 }
 
 .header {
@@ -860,6 +860,43 @@ main > section + section {
 
 .principles__carousel.is-grabbing {
   cursor: grabbing;
+}
+
+.principles__arrows {
+  width: 160px;
+  height: 72px;
+  margin: 40px auto 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.principles__arrows .slider-arrow {
+  width: 72px;
+  height: 72px;
+  padding: 12px;
+  border-radius: 20px;
+  flex: 0 0 72px;
+}
+
+.principles__arrows .slider-arrow::before {
+  width: 48px;
+  height: 48px;
+  flex-basis: 48px;
+  background-size: 48px 48px;
+}
+
+.principles__arrows .slider-arrow[data-principles-next]::before {
+  background-image: url("assets/icons/arrow-right.svg");
+}
+
+.principles__arrows .slider-arrow[data-principles-prev] {
+  padding: 12px 14px 12px 10px;
+}
+
+.principles__arrows .slider-arrow[data-principles-next] {
+  padding: 12px 10px 12px 14px;
 }
 
 .principle-card {
@@ -2071,6 +2108,13 @@ body {
   font-weight: 500;
 }
 
+.portfolio__content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .portfolio__drum-scroll {
   width: 100%;
   position: relative;
@@ -2158,6 +2202,7 @@ body {
   font-size: 28px;
   line-height: 1.3;
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
 .portfolio-card__description p {
@@ -2165,6 +2210,7 @@ body {
   font-size: 18px;
   line-height: 1.4;
   color: var(--text-muted);
+  overflow-wrap: anywhere;
 }
 
 .portfolio-card__stats {
@@ -2289,10 +2335,6 @@ body {
   background: #fdfffb;
 }
 
-.portfolio__drum-scroll + .portfolio__cta {
-  margin-top: -32px;
-}
-
 .portfolio__cta-button {
   width: 100%;
   height: 68px;
@@ -2305,9 +2347,16 @@ body {
   line-height: 1.2;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 10px;
   padding: 20px 32px;
+}
+
+.portfolio__cta-button span {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
 }
 
 .portfolio__cta-button img {
@@ -2533,7 +2582,7 @@ body {
   width: 100%;
   border-radius: 20px;
   background: #f8f8f8;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .disclosure__button {
@@ -2685,7 +2734,7 @@ body {
   align-self: start;
   border-radius: 20px;
   background: #fdfffb;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .faq-item__button {
@@ -2731,12 +2780,6 @@ body {
   font-size: 16px;
   line-height: 1.45;
   color: #696d66;
-}
-
-@media (min-width: 992px) {
-  main > section + section {
-    margin-top: var(--section-gap);
-  }
 }
 
 .footer {
@@ -2933,7 +2976,6 @@ body {
     margin: 0;
     flex-direction: column;
     gap: 56px;
-    transform: none !important;
   }
 
   .work-stages__heading-wrap {
@@ -2958,7 +3000,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    transform: none !important;
   }
 
   .work-stage,
@@ -3384,10 +3425,6 @@ body {
     padding: 40px;
   }
 
-  .portfolio__drum-scroll + .portfolio__cta {
-    margin-top: 16px;
-  }
-
   .feedback {
     padding: 0 40px;
   }
@@ -3487,6 +3524,10 @@ body {
   .burger-button {
     display: inline-flex;
   }
+
+  .principles__arrows {
+    display: flex;
+  }
 }
 
 @media (max-width: 768px) {
@@ -3579,11 +3620,11 @@ body {
   }
 
   .portfolio-card__description h3 {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .portfolio-card__description p {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .portfolio-card__stats li,
@@ -3595,10 +3636,6 @@ body {
   .portfolio__cta {
     border-radius: 20px;
     padding: 20px;
-  }
-
-  .portfolio__drum-scroll + .portfolio__cta {
-    margin-top: -16px;
   }
 
   .portfolio__cta-button {
@@ -3816,7 +3853,7 @@ body {
   }
 
   .mobile-menu__nav {
-    padding-top: 4px;
+    padding-top: 0;
     gap: 24px;
   }
 
@@ -4201,10 +4238,6 @@ body {
     background-size: 36px 36px;
   }
 
-  .portfolio__drum-scroll + .portfolio__cta {
-    margin-top: 16px;
-  }
-
   .portfolio__cta-button {
     height: 68px;
     border-radius: 20px;
@@ -4399,7 +4432,7 @@ body {
   }
 
   .mobile-menu__nav {
-    padding-top: 4px;
+    padding-top: 0;
     gap: 24px;
   }
 
@@ -4953,7 +4986,7 @@ body {
   }
 
   .mobile-menu__nav {
-    padding-top: 4px;
+    padding-top: 0;
     gap: 24px;
   }
 
@@ -5425,7 +5458,7 @@ body {
   }
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1440px) and (min-width: 992px) {
   .header__inner,
   .hero__inner,
   .benefits__inner,
@@ -5447,6 +5480,412 @@ body {
   .pricing__plans {
     width: 100%;
     max-width: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .header__inner {
+    width: 100%;
+    max-width: none;
+  }
+
+  .additional-services {
+    overflow: visible;
+  }
+
+}
+
+@media (max-width: 1439px) {
+  .hero__glow,
+  .hero__visual--fallback .hero__glow {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+/* Figma Fill behavior for text wrappers */
+.benefit-card__text,
+.cta__card--bottom > .cta__content,
+.cta__card--bottom .cta__copy,
+.cta__card--bottom .cta__form,
+.additional-card__content,
+.portfolio-card__description,
+.feedback-card__about,
+.popup-form__copy {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.benefit-card__text h3,
+.benefit-card__text p,
+.cta__copy h2,
+.cta__copy p,
+.additional-card h3,
+.additional-card p,
+.portfolio-card__description h3,
+.portfolio-card__description p,
+.feedback-card__about h3,
+.feedback-card__about p,
+.popup-form__copy h2,
+.popup-form__copy p {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 991px) {
+  .portfolio-card__about {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .portfolio-card__description,
+  .portfolio-card__stats,
+  .portfolio-image {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Final consistency pass: text fill + paddings per Figma breakpoints */
+.benefit-card h3,
+.benefit-card p,
+.audience-card h3,
+.audience-card p,
+.pricing-plan__duration,
+.pricing-plan__points li,
+.additional-card h3,
+.additional-card p,
+.portfolio-card__description h3,
+.portfolio-card__description p,
+.portfolio-card__stats li,
+.feedback-card__about h3,
+.feedback-card__about p,
+.disclosure__button,
+.faq-item__button {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.disclosure__button > span:first-child,
+.faq-item__button > span:first-child {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 991px) {
+  .hero__inner,
+  .benefits__inner,
+  .principles__inner,
+  .cta__inner,
+  .audience__inner,
+  .pricing__inner,
+  .additional-services__inner,
+  .portfolio__inner,
+  .feedback__inner,
+  .faq__inner,
+  .footer__inner {
+    width: 100%;
+    max-width: none;
+  }
+
+  .mobile-menu__nav {
+    padding-top: 0;
+  }
+
+  .portfolio {
+    padding-inline: 0;
+  }
+
+  .portfolio__drum-scroll {
+    padding-inline: 40px;
+  }
+
+  .portfolio-card {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  .portfolio__cta {
+    width: auto;
+    margin-inline: 40px;
+  }
+
+  .cta__card--bottom > .cta__content,
+  .cta__card--bottom > .cta__visual,
+  .cta__card--bottom .cta__copy,
+  .cta__card--bottom .cta__form,
+  .benefit-card__text,
+  .additional-card__content,
+  .portfolio-card__description,
+  .portfolio-card__stats,
+  .portfolio-image,
+  .feedback-card__about {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .header {
+    padding-inline: 16px;
+  }
+
+  .hero,
+  .benefits,
+  .principles,
+  .cta,
+  .audience,
+  .pricing,
+  .additional-services,
+  .feedback,
+  .faq,
+  .footer {
+    padding-inline: 16px;
+  }
+
+  .portfolio {
+    padding-inline: 0;
+  }
+
+  .portfolio__drum-scroll {
+    padding-inline: 16px;
+  }
+
+  .portfolio__cta {
+    margin-inline: 16px;
+  }
+
+  .work-stages {
+    padding-inline: 40px;
+  }
+}
+
+@media (max-width: 479px) {
+  .work-stages {
+    padding-inline: 16px;
+  }
+}
+
+/* Pricing: resolution-dependent geometry + auto-height cards below 991 */
+.pricing-plan__tape {
+  width: 20px;
+  height: 68px;
+  flex: 0 0 20px;
+  margin-top: 40px;
+}
+
+@media (max-width: 480px) {
+  .pricing-plan__tape {
+    margin-top: 28px;
+  }
+}
+
+@media (max-width: 991px) {
+  .pricing-plan__card,
+  .pricing-plan:nth-child(1) .pricing-plan__card,
+  .pricing-plan:nth-child(2) .pricing-plan__card,
+  .pricing-plan:nth-child(3) .pricing-plan__card {
+    height: auto;
+  }
+}
+
+@media (max-width: 1439px) {
+  .cta__card--bottom {
+    height: auto;
+  }
+
+  .cta__card--bottom > .cta__content,
+  .cta__card--bottom > .cta__visual,
+  .cta__card--bottom .cta__copy,
+  .cta__card--bottom .cta__form {
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .benefits__heading {
+    width: 100%;
+    flex: 0 0 auto;
+    height: auto;
+    display: block;
+  }
+
+  .benefits__heading h2 {
+    font-size: 30px;
+  }
+}
+
+/* Additional slider: full-width outer clip + content-width inner track */
+@media (max-width: 991px) {
+  .additional-services {
+    padding-inline: 0;
+  }
+
+  .additional-slider {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .additional-slider__viewport {
+    width: 100%;
+    padding-inline: 40px;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .additional-slider > .slider-arrows {
+    right: 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  .additional-slider__viewport {
+    padding-inline: 16px;
+  }
+
+  .additional-slider > .slider-arrows {
+    right: 16px;
+  }
+}
+
+/* Work stages: unified horizontal timeline across all breakpoints */
+.work-stages {
+  --work-stages-inline-padding: 40px;
+  --work-stages-sticky-width: min(100%, var(--hero-max-width));
+  --work-stages-heading-width: 415px;
+  --work-stages-heading-size: 40px;
+  --work-stages-heading-gap: 80px;
+  --work-stages-heading-align: flex-start;
+
+  padding-inline: var(--work-stages-inline-padding);
+  overflow: visible;
+}
+
+.work-stages__sticky {
+  position: sticky;
+  top: max(0px, calc(50vh - 275px));
+  width: var(--work-stages-sticky-width);
+  height: 550px;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.work-stages__inner {
+  width: max-content;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  will-change: transform;
+}
+
+.work-stages__heading-wrap {
+  width: calc(var(--work-stages-heading-width) + var(--work-stages-heading-gap));
+  flex: 0 0 calc(var(--work-stages-heading-width) + var(--work-stages-heading-gap));
+  height: 550px;
+  display: flex;
+  align-items: var(--work-stages-heading-align);
+}
+
+.work-stages__heading {
+  width: var(--work-stages-heading-width);
+  max-width: var(--work-stages-heading-width);
+  margin: 0;
+  font-size: var(--work-stages-heading-size);
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.work-stages__viewport {
+  width: 2940px;
+  flex: 0 0 2940px;
+  height: 550px;
+  overflow: visible;
+  position: relative;
+}
+
+.work-stages__paths {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 2940px;
+  height: 550px;
+  pointer-events: none;
+}
+
+.work-stages__track {
+  width: max-content;
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
+}
+
+.work-stage,
+.work-stage--bottom {
+  width: 660px;
+  height: 550px;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.work-stage {
+  align-items: flex-start;
+}
+
+.work-stage--bottom {
+  align-items: flex-end;
+}
+
+.work-stage__number {
+  width: 250px;
+  height: 165px;
+  padding: 20px 40px;
+  font-size: 96px;
+}
+
+.work-stage__desc {
+  width: 400px;
+  margin-top: 19px;
+  margin-bottom: 0;
+  gap: 16px;
+}
+
+.work-stage--bottom .work-stage__desc {
+  margin-top: 0;
+  margin-bottom: 1px;
+}
+
+@media (max-width: 991px) and (min-width: 768px) {
+  .work-stages {
+    --work-stages-inline-padding: 40px;
+    --work-stages-sticky-width: min(100%, 688px);
+    --work-stages-heading-width: 415px;
+    --work-stages-heading-size: 40px;
+  }
+}
+
+@media (max-width: 767px) and (min-width: 480px) {
+  .work-stages {
+    --work-stages-inline-padding: 40px;
+    --work-stages-sticky-width: min(100%, 400px);
+    --work-stages-heading-width: 352px;
+    --work-stages-heading-size: 34px;
+  }
+}
+
+@media (max-width: 479px) {
+  .work-stages {
+    --work-stages-inline-padding: 16px;
+    --work-stages-sticky-width: 288px;
+    --work-stages-heading-width: 288px;
+    --work-stages-heading-size: 30px;
   }
 }
 

@@ -110,6 +110,20 @@ export function initPrinciplesCarousel() {
   const root = document.querySelector("[data-principles-carousel]");
   if (!root || PRINCIPLES.length === 0) return;
 
+  let controls = root.parentElement?.querySelector(".principles__arrows");
+  if (!controls) {
+    controls = document.createElement("div");
+    controls.className = "principles__arrows";
+    controls.innerHTML = `
+      <button class="slider-arrow" type="button" data-principles-prev aria-label="Предыдущая карточка"></button>
+      <button class="slider-arrow" type="button" data-principles-next aria-label="Следующая карточка"></button>
+    `;
+    root.insertAdjacentElement("afterend", controls);
+  }
+
+  const prevButton = controls.querySelector("[data-principles-prev]");
+  const nextButton = controls.querySelector("[data-principles-next]");
+
   const cardElements = [];
   const progressElements = [];
 
@@ -427,6 +441,14 @@ export function initPrinciplesCarousel() {
   root.addEventListener("pointercancel", handlePointerEnd);
   root.addEventListener("keydown", handleKeydown);
   root.addEventListener("click", handleCardClick);
+
+  prevButton?.addEventListener("click", () => {
+    step(-1, { force: true });
+  });
+
+  nextButton?.addEventListener("click", () => {
+    step(1, { force: true });
+  });
 
   render();
 

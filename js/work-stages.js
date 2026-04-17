@@ -101,7 +101,8 @@ export function initWorkStagesAnimation() {
   const stages = Array.from(section?.querySelectorAll("[data-stage]") || []);
   const paths = Array.from(section?.querySelectorAll("[data-stage-path]") || []);
 
-  if (!section || !sticky || !inner || !headingWrap || !viewport || !pathsLayer || !track || stages.length === 0) return;
+  if (!section || !sticky || !inner || !headingWrap || !viewport || !pathsLayer || !track || stages.length === 0)
+    return;
 
   const runtime = getGsapRuntime();
   if (!runtime?.ScrollTrigger || prefersReducedMotion) return;
@@ -156,12 +157,13 @@ export function initWorkStagesAnimation() {
   const setup = () => {
     destroy();
 
+    const viewportHeight = Math.max(window.innerHeight, 1);
     const availableViewportWidth = Math.max(0, sticky.clientWidth - headingWrap.clientWidth);
     const maxShift = Math.max(0, viewport.scrollWidth - availableViewportWidth);
     const stickyHeight = Math.max(sticky.offsetHeight, 1);
-    const stickyTopOffset = Math.max(0, (window.innerHeight - stickyHeight) * 0.5);
+    const stickyTopOffset = Math.max(0, (viewportHeight - stickyHeight) * 0.5);
 
-    const fullDistance = Math.max(maxShift * WORK_STAGES_SCROLL_MULTIPLIER, window.innerHeight * 1.2);
+    const fullDistance = Math.max(maxShift * WORK_STAGES_SCROLL_MULTIPLIER, viewportHeight * 1.2);
     section.style.height = `${Math.ceil(fullDistance + stickyHeight)}px`;
 
     const sequence = createSequence(stageNodes.length, paths.length);
@@ -318,4 +320,5 @@ export function initWorkStagesAnimation() {
 
   setup();
   window.addEventListener("resize", setup);
+  window.addEventListener("load", setup, { once: true });
 }

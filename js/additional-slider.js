@@ -29,12 +29,18 @@ export function initAdditionalSlider() {
   let maxIndex = 0;
   let index = 0;
   const NEXT_DISABLE_TOLERANCE = 16;
+  const getClipWidth = () => {
+    const style = window.getComputedStyle(viewport);
+    const paddingLeft = Number.parseFloat(style.paddingLeft) || 0;
+    const paddingRight = Number.parseFloat(style.paddingRight) || 0;
+    return Math.max(0, viewport.clientWidth - paddingLeft - paddingRight);
+  };
 
   const updateMetrics = () => {
     const cardWidth = cards[0].offsetWidth;
     const gap = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft - cardWidth : 0;
     step = cardWidth + Math.max(0, gap);
-    maxOffset = Math.max(0, track.scrollWidth - viewport.clientWidth);
+    maxOffset = Math.max(0, track.scrollWidth - getClipWidth());
 
     if (step <= 0) {
       index = 0;
