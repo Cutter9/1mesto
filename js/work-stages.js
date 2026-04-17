@@ -9,6 +9,8 @@ const BADGE_START_SCALE = 0.3;
 const BADGE_OFFSET_Y = 26;
 const TEXT_OFFSET_Y = 18;
 const WORK_STAGES_SCROLL_MULTIPLIER = 2;
+const STAGE_REVEAL_THRESHOLD = 0.995;
+const STAGE_HIDE_THRESHOLD = 0.96;
 
 const SEQUENCE_UNITS = {
   badge: 14,
@@ -153,7 +155,6 @@ export function initWorkStagesAnimation() {
 
   const setup = () => {
     destroy();
-    if (window.innerWidth < 769) return;
 
     const availableViewportWidth = Math.max(0, sticky.clientWidth - headingWrap.clientWidth);
     const maxShift = Math.max(0, viewport.scrollWidth - availableViewportWidth);
@@ -191,37 +192,88 @@ export function initWorkStagesAnimation() {
 
     inner.style.transform = "translate3d(0, 0, 0)";
 
+    const stageRevealed = Array.from({ length: stageNodes.length }, () => false);
+    const stageTimelines = Array.from({ length: stageNodes.length }, () => null);
+
+    const resetStage = (index) => {
+      const stageTimeline = stageTimelines[index];
+      if (stageTimeline) {
+        stageTimeline.kill();
+        stageTimelines[index] = null;
+      }
+
+      const { number, title, text } = stageNodes[index];
+      if (number) {
+        number.style.opacity = "0";
+        number.style.transform = `translateY(${BADGE_OFFSET_Y}px) scale(${BADGE_START_SCALE})`;
+      }
+      if (title) {
+        title.style.opacity = "0";
+        title.style.transform = `translateY(${TEXT_OFFSET_Y}px)`;
+      }
+      if (text) {
+        text.style.opacity = "0";
+        text.style.transform = `translateY(${TEXT_OFFSET_Y}px)`;
+      }
+    };
+
+    const revealStage = (index) => {
+      resetStage(index);
+
+      const { number, title, text } = stageNodes[index];
+      const timeline = runtime.gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      if (number) {
+        timeline.to(
+          number,
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1
+          },
+          0
+        );
+      }
+
+      if (title) {
+        timeline.to(
+          title,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5
+          },
+          1
+        );
+      }
+
+      if (text) {
+        timeline.to(
+          text,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5
+          },
+          1.5
+        );
+      }
+
+      stageTimelines[index] = timeline;
+    };
+
     const applyProgress = (rawProgress) => {
       const stagesProgress = clamp(rawProgress, 0, 1);
 
       const x = -maxShift * stagesProgress;
       inner.style.transform = `translate3d(${x}px, 0, 0)`;
 
-      stageNodes.forEach(({ number, title, text }, index) => {
-        const badgeProgress = getRangeProgress(stagesProgress, sequence.ranges.badge[index], sequence.totalUnits);
-        const titleProgress = getRangeProgress(stagesProgress, sequence.ranges.title[index], sequence.totalUnits);
-        const textProgress = getRangeProgress(stagesProgress, sequence.ranges.text[index], sequence.totalUnits);
-
-        if (number) {
-          const scale = BADGE_START_SCALE + (1 - BADGE_START_SCALE) * badgeProgress;
-          const y = (1 - badgeProgress) * BADGE_OFFSET_Y;
-          number.style.opacity = String(badgeProgress);
-          number.style.transform = `translateY(${y}px) scale(${scale})`;
-        }
-
-        if (title) {
-          title.style.opacity = String(titleProgress);
-          title.style.transform = `translateY(${(1 - titleProgress) * TEXT_OFFSET_Y}px)`;
-        }
-
-        if (text) {
-          text.style.opacity = String(textProgress);
-          text.style.transform = `translateY(${(1 - textProgress) * TEXT_OFFSET_Y}px)`;
-        }
-      });
+      const lineProgresses = Array.from({ length: paths.length }, () => 0);
 
       paths.forEach((path, index) => {
         const lineProgress = getRangeProgress(stagesProgress, sequence.ranges.line[index], sequence.totalUnits);
+        lineProgresses[index] = lineProgress;
         const length = pathLengths[index] || 0;
         const visibleLength = length * lineProgress;
 
@@ -232,6 +284,22 @@ export function initWorkStagesAnimation() {
         }
 
         path.style.strokeDashoffset = "0";
+      });
+
+      stageNodes.forEach((_stageNode, index) => {
+        const shouldReveal = index === 0 ? stagesProgress > 0.0001 : lineProgresses[index - 1] >= STAGE_REVEAL_THRESHOLD;
+        const shouldHide = index === 0 ? stagesProgress <= 0.0001 : lineProgresses[index - 1] <= STAGE_HIDE_THRESHOLD;
+
+        if (shouldReveal && !stageRevealed[index]) {
+          stageRevealed[index] = true;
+          revealStage(index);
+          return;
+        }
+
+        if (shouldHide && stageRevealed[index]) {
+          stageRevealed[index] = false;
+          resetStage(index);
+        }
       });
     };
 

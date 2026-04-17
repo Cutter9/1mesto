@@ -13,7 +13,7 @@ function initBeforeAfterSwitchers() {
     if (slides.length < 2 || !label || !prevButton || !nextButton) return;
 
     let index = 0;
-    const states = ["Было", "Стало"];
+    const states = ["\u0411\u044b\u043b\u043e", "\u0421\u0442\u0430\u043b\u043e"];
 
     const render = () => {
       slides.forEach((slide, slideIndex) => {
@@ -121,7 +121,7 @@ export function initPortfolioDrum() {
   const setup = () => {
     destroy();
 
-    if (window.innerWidth <= 991) return;
+    if (window.innerWidth < 992) return;
 
     scrollRoot.classList.add("portfolio__drum-scroll--animated");
 
