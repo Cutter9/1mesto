@@ -1,0 +1,17 @@
+{
+  "name": "1mesto",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "resize": "node scripts/resize-images.js",
+    "build:css": "cleancss -o styles.min.css styles.css",
+    "build:js": "esbuild script.js --bundle --minify --format=esm --outfile=dist/bundle.min.js",
+    "build": "npm run resize && npm run build:css && npm run build:js"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "esbuild": "^0.25.0",
+    "sharp": "^0.33.0"
+  }
+}

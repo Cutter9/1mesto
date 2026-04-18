@@ -38,8 +38,7 @@ export function initCustomCursor() {
   const animateCursor = () => {
     cursorX += (targetX - cursorX) * lagFactor;
     cursorY += (targetY - cursorY) * lagFactor;
-    cursor.style.left = `${cursorX}px`;
-    cursor.style.top = `${cursorY}px`;
+    cursor.style.transform = `translate3d(calc(${cursorX}px - 50%), calc(${cursorY}px - 50%), 0)`;
 
     const isSettled = Math.abs(targetX - cursorX) < 0.2 && Math.abs(targetY - cursorY) < 0.2;
     const isIdle = performance.now() - lastMoveTs > 140;
@@ -62,8 +61,7 @@ export function initCustomCursor() {
     const y = event.clientY;
     targetX = x;
     targetY = y;
-    dot.style.left = `${x}px`;
-    dot.style.top = `${y}px`;
+    dot.style.transform = `translate3d(calc(${x}px - 50%), calc(${y}px - 50%), 0)`;
     cursor.style.opacity = "1";
     dot.style.opacity = "1";
     lastMoveTs = performance.now();

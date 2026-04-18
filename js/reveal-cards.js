@@ -30,12 +30,19 @@ export function initRevealCards() {
     const viewportHeight = window.innerHeight;
     const startLine = viewportHeight * 0.92;
     const endLine = viewportHeight * 0.5;
+    let allDone = true;
 
     cards.forEach((card) => {
       const rect = card.getBoundingClientRect();
       const progress = clamp((startLine - rect.top) / (startLine - endLine), 0, 1);
       card.style.setProperty("--reveal", progress.toFixed(3));
+      if (progress < 1) allDone = false;
     });
+
+    if (allDone) {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+    }
 
     ticking = false;
   };

@@ -1,13 +1,5 @@
 @font-face {
   font-family: "Find Sans Pro";
-  src: url("assets/fonts/FindSansPro-Light.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Find Sans Pro";
   src: url("assets/fonts/FindSansPro-Regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
@@ -96,8 +88,8 @@ body.body--lock {
   pointer-events: none;
   z-index: 9999;
   opacity: 0;
-  transform: translate(-50%, -50%);
-  transition: opacity 120ms ease, transform 120ms ease;
+  transition: opacity 120ms ease;
+  will-change: transform;
 }
 
 .custom-cursor.custom-cursor--lite {
@@ -118,8 +110,8 @@ body.body--lock {
   pointer-events: none;
   z-index: 10000;
   opacity: 0;
-  transform: translate(-50%, -50%);
   transition: opacity 120ms ease;
+  will-change: transform;
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -189,7 +181,8 @@ main > section + section {
   flex: 0 0 auto;
 }
 
-.logo img {
+.logo img,
+.logo svg {
   width: 100%;
   height: 100%;
   display: block;
@@ -595,7 +588,7 @@ main > section + section {
   bottom: 0;
   background:
     linear-gradient(180deg, rgba(248, 248, 248, 0) 85.08%, #f8f8f8 100%),
-    url("assets/Hero_BG.jpg") center / cover no-repeat;
+    url("assets/Hero_BG.webp") center / cover no-repeat;
   pointer-events: none;
   z-index: 0;
 }
@@ -1131,10 +1124,6 @@ main > section + section {
   overflow-wrap: break-word;
 }
 
-.brand-block__char {
-  opacity: 0;
-  transition: opacity 90ms linear;
-}
 
 .pricing {
   width: 100%;
@@ -2722,12 +2711,35 @@ body {
   transform: translate(-50%, -50%) rotate(-180deg);
 }
 
+[data-disclosure-panel] {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-disclosure-item].is-open [data-disclosure-panel] {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-disclosure-panel] {
+    transition: none;
+  }
+}
+
+.disclosure__panel-inner {
+  overflow: hidden;
+  min-height: 0;
+  padding: 0 24px;
+}
+
 .disclosure__panel {
-  padding: 0 24px 18px;
+  padding: 0;
 }
 
 .disclosure__panel p {
-  margin: 12px 0 0;
+  margin: 12px 0 18px;
   font-size: 16px;
   line-height: 1.45;
   color: #696d66;
@@ -2820,11 +2832,11 @@ body {
 }
 
 .faq-item__panel {
-  padding: 0 24px 18px;
+  padding: 0;
 }
 
 .faq-item__panel p {
-  margin: 12px 0 0;
+  margin: 12px 0 18px;
   font-size: 16px;
   line-height: 1.45;
   color: #696d66;
@@ -2881,7 +2893,8 @@ body {
   flex: 0 0 auto;
 }
 
-.footer__logo img {
+.footer__logo img,
+.footer__logo svg {
   width: 100%;
   height: 100%;
   display: block;
@@ -5010,7 +5023,7 @@ body {
   }
 
   .hero__inner {
-    width: 288px;
+    width: 100%;
     gap: 60px;
   }
 
@@ -5031,8 +5044,8 @@ body {
   }
 
   .hero__visual {
-    width: 288px;
-    height: 320px;
+    width: 100%;
+    height: auto;
   }
 
   .benefits {
@@ -5962,12 +5975,13 @@ body {
 
 /* Outer sections clipping: header -> main sections -> footer */
 .header,
-main > section[class]:not(.work-stages):not(.additional-services):not(.portfolio):not(.principles):not(.benefits),
+main > section[class]:not(.work-stages):not(.additional-services):not(.portfolio):not(.principles):not(.benefits):not(.hero),
 .footer {
   overflow: hidden;
 }
 
-.work-stages {
+.work-stages,
+.hero {
   overflow: visible;
 }
 

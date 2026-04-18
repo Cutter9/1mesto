@@ -164,10 +164,15 @@ export function initPrinciplesCarousel() {
 
     progressElements.forEach((fill) => {
       if (!fill) return;
-      fill.style.removeProperty("transform");
+      fill.style.transform = "scaleX(0)";
     });
 
     let simpleIndex = 0;
+    let simpleProgress = 0;
+    let simpleRafId = null;
+    let simpleLastFrame = performance.now();
+    let simpleIsVisible = false;
+
     const getMaxSimpleIndex = () => Math.max(cardElements.length - 1, 0);
 
     const getStep = () => {
@@ -187,21 +192,85 @@ export function initPrinciplesCarousel() {
       simpleIndex = Math.max(0, Math.min(simpleIndex, getMaxSimpleIndex()));
     };
 
+    const setSimpleIndex = (nextIndex) => {
+      const prevFill = progressElements[simpleIndex];
+      if (prevFill) prevFill.style.transform = "scaleX(0)";
+      simpleIndex = Math.max(0, Math.min(nextIndex, getMaxSimpleIndex()));
+      simpleProgress = 0;
+      renderSimpleOffset();
+    };
+
     renderSimpleOffset();
+
+    const tickSimple = (time) => {
+      if (!simpleIsVisible || document.hidden) {
+        simpleRafId = null;
+        return;
+      }
+
+      const delta = time - simpleLastFrame;
+      simpleLastFrame = time;
+
+      if (!prefersReducedMotion) {
+        simpleProgress += delta / AUTO_PLAY_MS;
+
+        if (simpleProgress >= 1) {
+          const maxIndex = getMaxSimpleIndex();
+          if (simpleIndex < maxIndex) {
+            setSimpleIndex(simpleIndex + 1);
+          } else {
+            simpleProgress = 1;
+            const fill = progressElements[simpleIndex];
+            if (fill) fill.style.transform = "scaleX(1)";
+          }
+        } else {
+          const fill = progressElements[simpleIndex];
+          if (fill) fill.style.transform = `scaleX(${simpleProgress.toFixed(4)})`;
+        }
+      }
+
+      simpleRafId = requestAnimationFrame(tickSimple);
+    };
+
+    const startSimpleTicker = () => {
+      if (simpleRafId !== null) return;
+      if (!simpleIsVisible || document.hidden) return;
+      simpleLastFrame = performance.now();
+      simpleRafId = requestAnimationFrame(tickSimple);
+    };
+
+    const stopSimpleTicker = () => {
+      if (simpleRafId === null) return;
+      cancelAnimationFrame(simpleRafId);
+      simpleRafId = null;
+    };
+
+    const simpleSection = root.closest("section") || root.parentElement;
+    new IntersectionObserver(
+      ([entry]) => {
+        simpleIsVisible = Boolean(entry?.isIntersecting);
+        if (simpleIsVisible) startSimpleTicker();
+        else stopSimpleTicker();
+      },
+      { threshold: 0 }
+    ).observe(simpleSection);
+
+    document.addEventListener("visibilitychange", () => {
+      simpleLastFrame = performance.now();
+      if (document.hidden) stopSimpleTicker();
+      else if (simpleIsVisible) startSimpleTicker();
+    }, { passive: true });
 
     prevButton?.addEventListener("click", () => {
       clampSimpleIndex();
       if (simpleIndex === 0) return;
-      simpleIndex -= 1;
-      renderSimpleOffset();
+      setSimpleIndex(simpleIndex - 1);
     });
 
     nextButton?.addEventListener("click", () => {
       clampSimpleIndex();
-      const maxIndex = getMaxSimpleIndex();
-      if (simpleIndex >= maxIndex) return;
-      simpleIndex += 1;
-      renderSimpleOffset();
+      if (simpleIndex >= getMaxSimpleIndex()) return;
+      setSimpleIndex(simpleIndex + 1);
     });
 
     window.addEventListener(
