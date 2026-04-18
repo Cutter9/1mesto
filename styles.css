@@ -1435,10 +1435,6 @@ main > section + section {
     display: none;
   }
 
-  .hero__glow {
-    display: none;
-  }
-
   .hero__phones-img {
     display: block;
     width: 100%;
