@@ -9,7 +9,7 @@ export function initCustomCursor() {
     window.matchMedia("(hover: hover)").matches &&
     window.matchMedia("(pointer: fine)").matches;
 
-  if (!supportsFinePointer) {
+  if (!supportsFinePointer || window.innerWidth < 991) {
     cursor.style.display = "none";
     dot.style.display = "none";
     return;

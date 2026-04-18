@@ -7,7 +7,7 @@ export function initSmoothScroll() {
     window.matchMedia("(hover: hover)").matches &&
     window.matchMedia("(pointer: fine)").matches;
 
-  if (!supportsFinePointer || prefersReducedMotion || isLikelyLowPerformanceDevice()) return;
+  if (!supportsFinePointer || prefersReducedMotion || isLikelyLowPerformanceDevice() || window.innerWidth < 991) return;
   window.__smoothScrollInitialized = true;
 
   document.documentElement.style.scrollBehavior = "auto";
