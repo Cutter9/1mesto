@@ -144,6 +144,8 @@ export function initPrinciplesCarousel() {
     root.classList.remove("is-grabbing");
     root.style.removeProperty("height");
     root.removeAttribute("tabindex");
+    root.style.willChange = "transform";
+    root.style.transition = "transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1)";
     if (controls) {
       controls.hidden = false;
       controls.removeAttribute("aria-hidden");
@@ -165,6 +167,9 @@ export function initPrinciplesCarousel() {
       fill.style.removeProperty("transform");
     });
 
+    let simpleIndex = 0;
+    const getMaxSimpleIndex = () => Math.max(cardElements.length - 1, 0);
+
     const getStep = () => {
       const firstCard = cardElements[0];
       if (!firstCard) return 0;
@@ -172,17 +177,41 @@ export function initPrinciplesCarousel() {
       return Math.max(cardWidth + 16, 0);
     };
 
-    prevButton?.addEventListener("click", () => {
+    const renderSimpleOffset = () => {
       const step = getStep();
-      if (step <= 0) return;
-      root.scrollBy({ left: -step, behavior: "smooth" });
+      const offset = simpleIndex * step;
+      root.style.transform = `translate3d(${-offset}px, 0, 0)`;
+    };
+
+    const clampSimpleIndex = () => {
+      simpleIndex = Math.max(0, Math.min(simpleIndex, getMaxSimpleIndex()));
+    };
+
+    renderSimpleOffset();
+
+    prevButton?.addEventListener("click", () => {
+      clampSimpleIndex();
+      if (simpleIndex === 0) return;
+      simpleIndex -= 1;
+      renderSimpleOffset();
     });
 
     nextButton?.addEventListener("click", () => {
-      const step = getStep();
-      if (step <= 0) return;
-      root.scrollBy({ left: step, behavior: "smooth" });
+      clampSimpleIndex();
+      const maxIndex = getMaxSimpleIndex();
+      if (simpleIndex >= maxIndex) return;
+      simpleIndex += 1;
+      renderSimpleOffset();
     });
+
+    window.addEventListener(
+      "resize",
+      () => {
+        clampSimpleIndex();
+        renderSimpleOffset();
+      },
+      { passive: true }
+    );
 
     return;
   }
