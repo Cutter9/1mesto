@@ -14,6 +14,7 @@
     <link rel="preload" href="styles.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="styles.min.css" /></noscript>
     <style>
+.preloader{position:fixed;inset:0;z-index:10000;background:#ffffff;display:flex;align-items:center;justify-content:center;transition:transform .7s cubic-bezier(.76,0,.24,1)}.preloader.is-hiding{transform:translateY(-100%)}.spinner{display:flex;align-items:center;gap:8px;margin:0;width:auto}.spinner>div{width:18px;height:18px;background-color:#99ef4d;border-radius:50%;display:inline-block;animation:sk-bouncedelay 1.4s infinite ease-in-out both}.spinner .bounce1{animation-delay:-.32s}.spinner .bounce2{animation-delay:-.16s}@keyframes sk-bouncedelay{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
 @font-face{font-family:"Find Sans Pro";src:url("assets/fonts/FindSansPro-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:"Find Sans Pro";src:url("assets/fonts/FindSansPro-Medium.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}
 @font-face{font-family:"Find Sans Pro";src:url("assets/fonts/FindSansPro-Bold.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap}
@@ -70,6 +71,13 @@ main>section+section{margin-top:var(--section-gap)}
     <script type="module" src="dist/bundle.min.js"></script>
   </head>
   <body>
+    <div class="preloader" id="preloader">
+      <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+    </div>
     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
       <defs>
         <symbol id="logo-mark" viewBox="0 0 2048 520.58">
@@ -1062,6 +1070,20 @@ main>section+section{margin-top:var(--section-gap)}
     </div>
     <div class="custom-cursor" aria-hidden="true"></div>
     <div class="custom-cursor-dot" aria-hidden="true"></div>
+    <script>
+      (function () {
+        var _pre = document.getElementById('preloader');
+        var _t0 = performance.now();
+        function _hide() {
+          _pre.classList.add('is-hiding');
+          _pre.addEventListener('transitionend', function () { _pre.remove(); }, { once: true });
+        }
+        window.addEventListener('load', function () {
+          var wait = Math.max(0, 3000 - (performance.now() - _t0));
+          setTimeout(_hide, wait);
+        });
+      })();
+    </script>
   </body>
 </html>
 

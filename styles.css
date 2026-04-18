@@ -147,6 +147,46 @@ main > section + section {
   margin-top: var(--section-gap);
 }
 
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.preloader.is-hiding {
+  transform: translateY(-100%);
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  width: auto;
+}
+
+.spinner > div {
+  width: 18px;
+  height: 18px;
+  background-color: #99ef4d;
+  border-radius: 50%;
+  display: inline-block;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 { animation-delay: -0.32s; }
+.spinner .bounce2 { animation-delay: -0.16s; }
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
 .header {
   position: fixed;
   top: 0;
