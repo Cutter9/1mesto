@@ -744,6 +744,12 @@ main > section + section {
   display: none;
 }
 
+.hero__phones-img {
+  display: none;
+  position: relative;
+  z-index: 2;
+}
+
 .hero__visual--fallback .hero__glow {
   opacity: 0.55;
   width: 520px;
@@ -1422,6 +1428,17 @@ main > section + section {
   .hero__visual {
     width: 100%;
     align-self: center;
+    aspect-ratio: auto;
+  }
+
+  .hero__spline-wrap {
+    display: none;
+  }
+
+  .hero__phones-img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   .benefits {

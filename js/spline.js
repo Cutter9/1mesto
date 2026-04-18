@@ -16,7 +16,7 @@ export async function initHeroSpline() {
   const canvas = document.getElementById("hero-spline-canvas");
   if (!canvas) return;
 
-  if (prefersReducedMotion) {
+  if (prefersReducedMotion || window.innerWidth < 991) {
     applySplineFallback(canvas);
     return;
   }
