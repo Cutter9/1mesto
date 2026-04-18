@@ -1435,6 +1435,10 @@ main > section + section {
     display: none;
   }
 
+  .hero__visual--fallback::after {
+    display: none;
+  }
+
   .hero__phones-img {
     display: block;
     width: 100%;
