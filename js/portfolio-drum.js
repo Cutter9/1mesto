@@ -121,8 +121,6 @@ export function initPortfolioDrum() {
   const setup = () => {
     destroy();
 
-    if (window.innerWidth < 992) return;
-
     scrollRoot.classList.add("portfolio__drum-scroll--animated");
 
     animatedItems.forEach((item) => {

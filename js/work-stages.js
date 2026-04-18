@@ -19,6 +19,13 @@ const SEQUENCE_UNITS = {
   line: 36
 };
 
+const MOBILE_SEQUENCE_UNITS = {
+  badge: 0,
+  title: 0,
+  text: 0,
+  line: SEQUENCE_UNITS.line
+};
+
 const roundDashValue = (value) => Number(value.toFixed(3));
 
 const buildDashedRevealPattern = (visibleLength, totalLength) => {
@@ -53,7 +60,7 @@ const buildDashedRevealPattern = (visibleLength, totalLength) => {
   return parts.join(" ");
 };
 
-const createSequence = (stagesCount, linesCount) => {
+const createSequence = (stagesCount, linesCount, units = SEQUENCE_UNITS) => {
   const ranges = {
     badge: Array.from({ length: stagesCount }, () => ({ start: 0, end: 0 })),
     title: Array.from({ length: stagesCount }, () => ({ start: 0, end: 0 })),
@@ -64,18 +71,18 @@ const createSequence = (stagesCount, linesCount) => {
   let cursor = 0;
 
   for (let index = 0; index < stagesCount; index += 1) {
-    ranges.badge[index] = { start: cursor, end: cursor + SEQUENCE_UNITS.badge };
-    cursor += SEQUENCE_UNITS.badge;
+    ranges.badge[index] = { start: cursor, end: cursor + units.badge };
+    cursor += units.badge;
 
-    ranges.title[index] = { start: cursor, end: cursor + SEQUENCE_UNITS.title };
-    cursor += SEQUENCE_UNITS.title;
+    ranges.title[index] = { start: cursor, end: cursor + units.title };
+    cursor += units.title;
 
-    ranges.text[index] = { start: cursor, end: cursor + SEQUENCE_UNITS.text };
-    cursor += SEQUENCE_UNITS.text;
+    ranges.text[index] = { start: cursor, end: cursor + units.text };
+    cursor += units.text;
 
     if (index < linesCount) {
-      ranges.line[index] = { start: cursor, end: cursor + SEQUENCE_UNITS.line };
-      cursor += SEQUENCE_UNITS.line;
+      ranges.line[index] = { start: cursor, end: cursor + units.line };
+      cursor += units.line;
     }
   }
 
@@ -166,7 +173,13 @@ export function initWorkStagesAnimation() {
     const fullDistance = Math.max(maxShift * WORK_STAGES_SCROLL_MULTIPLIER, viewportHeight * 1.2);
     section.style.height = `${Math.ceil(fullDistance + stickyHeight)}px`;
 
-    const sequence = createSequence(stageNodes.length, paths.length);
+    const useMobileSequence = window.matchMedia("(max-width: 991px)").matches;
+    const sequence = createSequence(
+      stageNodes.length,
+      paths.length,
+      useMobileSequence ? MOBILE_SEQUENCE_UNITS : SEQUENCE_UNITS
+    );
+    const mobileLineEnds = [];
 
     pathLengths.length = 0;
     paths.forEach((path) => {
@@ -193,6 +206,26 @@ export function initWorkStagesAnimation() {
     });
 
     inner.style.transform = "translate3d(0, 0, 0)";
+
+    if (useMobileSequence) {
+      const screenRightEdge = window.innerWidth;
+      let previousEnd = 0;
+
+      paths.forEach((_path, index) => {
+        const nextStageNumber = stageNodes[index + 1]?.number;
+        if (!nextStageNumber || maxShift <= 0) {
+          mobileLineEnds[index] = 1;
+          previousEnd = 1;
+          return;
+        }
+
+        const nextNumberLeftAtStart = nextStageNumber.getBoundingClientRect().left;
+        const entryProgress = clamp((nextNumberLeftAtStart - screenRightEdge) / maxShift, 0, 1);
+        const normalizedEnd = Math.max(previousEnd + 0.0001, entryProgress);
+        mobileLineEnds[index] = clamp(normalizedEnd, 0, 1);
+        previousEnd = mobileLineEnds[index];
+      });
+    }
 
     const stageRevealed = Array.from({ length: stageNodes.length }, () => false);
     const stageTimelines = Array.from({ length: stageNodes.length }, () => null);
@@ -274,7 +307,14 @@ export function initWorkStagesAnimation() {
       const lineProgresses = Array.from({ length: paths.length }, () => 0);
 
       paths.forEach((path, index) => {
-        const lineProgress = getRangeProgress(stagesProgress, sequence.ranges.line[index], sequence.totalUnits);
+        const lineProgress = useMobileSequence
+          ? (() => {
+              const start = index === 0 ? 0 : mobileLineEnds[index - 1] || 0;
+              const end = mobileLineEnds[index] || 1;
+              const span = Math.max(end - start, 0.0001);
+              return clamp((stagesProgress - start) / span, 0, 1);
+            })()
+          : getRangeProgress(stagesProgress, sequence.ranges.line[index], sequence.totalUnits);
         lineProgresses[index] = lineProgress;
         const length = pathLengths[index] || 0;
         const visibleLength = length * lineProgress;
