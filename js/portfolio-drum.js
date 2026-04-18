@@ -13,7 +13,7 @@ function initBeforeAfterSwitchers() {
     if (slides.length < 2 || !label || !prevButton || !nextButton) return;
 
     let index = 0;
-    const states = ["\u0411\u044b\u043b\u043e", "\u0421\u0442\u0430\u043b\u043e"];
+    const states = ["Было", "Стало"];
 
     const render = () => {
       slides.forEach((slide, slideIndex) => {
@@ -37,6 +37,23 @@ function initBeforeAfterSwitchers() {
   });
 }
 
+function resetAnimatedItems(items) {
+  items.forEach((item) => {
+    item.classList.remove("is-center");
+    item.style.removeProperty("transform");
+    item.style.removeProperty("opacity");
+    item.style.removeProperty("z-index");
+    item.style.removeProperty("filter");
+    item.style.removeProperty("pointer-events");
+  });
+}
+
+function setStaticLayout(scrollRoot, drum, items) {
+  drum.classList.remove("portfolio__drum--animated");
+  scrollRoot.classList.add("portfolio__drum-scroll--animated");
+  resetAnimatedItems(items);
+}
+
 export function initPortfolioDrum() {
   initBeforeAfterSwitchers();
 
@@ -49,25 +66,14 @@ export function initPortfolioDrum() {
   if (!scrollRoot || !drum || animatedItems.length < 1) return;
 
   const runtime = getGsapRuntime();
-  if (!runtime?.ScrollTrigger || prefersReducedMotion) return;
+  const gsap = runtime?.gsap || null;
+  const scrollTrigger = runtime?.ScrollTrigger || null;
 
-  const gsap = runtime.gsap;
   let sectionTrigger = null;
   let resizeRaf = null;
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const lerp = (from, to, progress) => from + (to - from) * progress;
-
-  const resetAnimatedItems = () => {
-    animatedItems.forEach((item) => {
-      item.classList.remove("is-center");
-      item.style.removeProperty("transform");
-      item.style.removeProperty("opacity");
-      item.style.removeProperty("z-index");
-      item.style.removeProperty("filter");
-      item.style.removeProperty("pointer-events");
-    });
-  };
 
   const destroy = () => {
     if (sectionTrigger) {
@@ -81,7 +87,7 @@ export function initPortfolioDrum() {
       pin.style.removeProperty("perspective");
       pin.style.removeProperty("perspective-origin");
     }
-    resetAnimatedItems();
+    resetAnimatedItems(animatedItems);
   };
 
   const getRevealProgress = (rect, viewportHeight) => {
@@ -99,7 +105,6 @@ export function initPortfolioDrum() {
       const rawProgress = getRevealProgress(rect, viewportHeight);
       const progress = rawProgress <= 0.01 ? 0 : rawProgress >= 0.99 ? 1 : rawProgress;
 
-      // Same geometry, but with half intensity and 60% initial scale.
       const scale = lerp(0.8, 1, progress);
       const rotateX = lerp(-32, 0, progress);
       const z = lerp(-60, 0, progress);
@@ -121,6 +126,12 @@ export function initPortfolioDrum() {
   const setup = () => {
     destroy();
 
+    const isDesktopAnimated = window.innerWidth >= 992 && !prefersReducedMotion && gsap && scrollTrigger;
+    if (!isDesktopAnimated) {
+      setStaticLayout(scrollRoot, drum, animatedItems);
+      return;
+    }
+
     scrollRoot.classList.add("portfolio__drum-scroll--animated");
 
     animatedItems.forEach((item) => {
@@ -132,7 +143,7 @@ export function initPortfolioDrum() {
       });
     });
 
-    sectionTrigger = runtime.ScrollTrigger.create({
+    sectionTrigger = scrollTrigger.create({
       trigger: scrollRoot.closest(".portfolio") || scrollRoot,
       start: "top bottom",
       end: "bottom top",
@@ -146,7 +157,7 @@ export function initPortfolioDrum() {
     });
 
     renderAnimatedItems();
-    runtime.ScrollTrigger.refresh();
+    scrollTrigger.refresh();
   };
 
   setup();
@@ -160,3 +171,4 @@ export function initPortfolioDrum() {
     });
   });
 }
+

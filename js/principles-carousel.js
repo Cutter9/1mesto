@@ -18,56 +18,56 @@ const SECOND_ROW_PULL_IN = 42;
 
 const PRINCIPLES = [
   {
-    icon: "assets/icons/3d%20Icons/Chess.png",
+    icon: "assets/icons/3d%20Icons/Chess.webp",
     iconAlt: "Иконка шахматной фигуры",
     title: "Индивидуальная стратегия",
     description:
       "Учитываем особенности бизнеса, ниши и конкретной точки, чтобы карточка компании выделялась среди конкурентов."
   },
   {
-    icon: "assets/icons/3d%20Icons/Stairs.png",
+    icon: "assets/icons/3d%20Icons/Stairs.webp",
     iconAlt: "Иконка лестницы",
     title: "Чёткий план работ",
     description:
       "Работаем по понятному плану. У большинства клиентов первые заметные результаты появляются в течение 1–3 месяцев."
   },
   {
-    icon: "assets/icons/3d%20Icons/Document.png",
+    icon: "assets/icons/3d%20Icons/Document.webp",
     iconAlt: "Иконка документа",
     title: "Регулярная отчётность",
     description:
       "Вы понимаете, что именно сделано и на каком этапе находится проект. Отчитываемся каждые 3–4 дня по выполненным шагам в проекте."
   },
   {
-    icon: "assets/icons/3d%20Icons/Safe.png",
+    icon: "assets/icons/3d%20Icons/Safe.webp",
     iconAlt: "Иконка сейфа",
     title: "Результат остаётся у Вас",
     description:
       "Вся проделанная работа сохраняется внутри бизнеса, и при желании вы сможете поддерживать результат самостоятельно."
   },
   {
-    icon: "assets/icons/3d%20Icons/Star.png",
+    icon: "assets/icons/3d%20Icons/Star.webp",
     iconAlt: "Иконка звезды",
     title: "Репутационный мониторинг",
     description:
       "Следим за отзывами, отрабатываем негатив и усиливаем положительный фон вокруг компании."
   },
   {
-    icon: "assets/icons/3d%20Icons/Puzzle.png",
+    icon: "assets/icons/3d%20Icons/Puzzle.webp",
     iconAlt: "Иконка пазла",
     title: "Опыт в разных нишах",
     description:
       "За 3 года работы агентство успело поработать с 23 нишами, поэтому быстрее находит рабочие решения под разные задачи."
   },
   {
-    icon: "assets/icons/3d%20Icons/Chat.png",
+    icon: "assets/icons/3d%20Icons/Chat.webp",
     iconAlt: "Иконка чата",
     title: "Всегда на связи",
     description:
       "Держим связь, объясняем решения и помогаем быстро закрывать возникающие вопросы по ходу работы."
   },
   {
-    icon: "assets/icons/3d%20Icons/Graph.png",
+    icon: "assets/icons/3d%20Icons/Graph.webp",
     iconAlt: "Иконка графика",
     title: "Упор на маркетинг",
     description:
@@ -138,6 +138,60 @@ export function initPrinciplesCarousel() {
     root.append(card);
   });
 
+  const isSimpleMobileMode = window.matchMedia("(max-width: 479px)").matches;
+  if (isSimpleMobileMode) {
+    root.classList.add("principles__carousel--simple");
+    root.classList.remove("is-grabbing");
+    root.style.removeProperty("height");
+    root.removeAttribute("tabindex");
+    if (controls) {
+      controls.hidden = false;
+      controls.removeAttribute("aria-hidden");
+    }
+
+    cardElements.forEach((card) => {
+      card.classList.remove("is-active");
+      card.classList.add("is-visible");
+      card.style.removeProperty("opacity");
+      card.style.removeProperty("pointer-events");
+      card.style.removeProperty("z-index");
+      card.style.removeProperty("transform");
+      card.style.removeProperty("--content-opacity");
+      card.style.removeProperty("--shadow-alpha");
+    });
+
+    progressElements.forEach((fill) => {
+      if (!fill) return;
+      fill.style.removeProperty("transform");
+    });
+
+    const getStep = () => {
+      const firstCard = cardElements[0];
+      if (!firstCard) return 0;
+      const cardWidth = firstCard.getBoundingClientRect().width;
+      return Math.max(cardWidth + 16, 0);
+    };
+
+    prevButton?.addEventListener("click", () => {
+      const step = getStep();
+      if (step <= 0) return;
+      root.scrollBy({ left: -step, behavior: "smooth" });
+    });
+
+    nextButton?.addEventListener("click", () => {
+      const step = getStep();
+      if (step <= 0) return;
+      root.scrollBy({ left: step, behavior: "smooth" });
+    });
+
+    return;
+  }
+
+  root.classList.remove("principles__carousel--simple");
+  if (controls) {
+    controls.hidden = false;
+    controls.removeAttribute("aria-hidden");
+  }
   root.tabIndex = 0;
 
   let activeIndex = 0;

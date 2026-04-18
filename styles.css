@@ -475,6 +475,7 @@ main > section + section {
 .popup-form__card {
   position: relative;
   width: 100%;
+  max-width: 991px;
   background: #fdfffb;
   border-radius: 40px;
   padding: 40px;
@@ -669,6 +670,7 @@ main > section + section {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .hero__spline-wrap canvas {
@@ -680,7 +682,8 @@ main > section + section {
   transform-origin: center center;
   background: transparent;
   display: block;
-  touch-action: none;
+  pointer-events: none;
+  touch-action: auto;
 }
 
 .hero__spline-wrap--disabled {
@@ -1948,7 +1951,8 @@ body {
   padding: 0 40px;
   position: relative;
   z-index: 1;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .additional-services__inner {
@@ -1977,8 +1981,7 @@ body {
 
 .additional-slider__viewport {
   width: 100%;
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow: visible;
 }
 
 .additional-slider__track {
@@ -2163,10 +2166,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 40px;
-  transform-origin: center center center;
-  backface-visibility: hidden;
-  will-change: transform, opacity, filter;
-  transform-style: preserve-3d;
 }
 
 .portfolio__drum--animated .portfolio-card {
@@ -2592,6 +2591,13 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.feedback-card__video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
   display: block;
 }
 
@@ -5434,6 +5440,43 @@ body {
   }
 }
 
+@media (max-width: 479px) {
+  .principles__carousel.principles__carousel--simple {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 4px;
+    cursor: default;
+    user-select: auto;
+    touch-action: pan-x;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .principles__carousel.principles__carousel--simple .principle-card {
+    position: relative;
+    inset: auto;
+    left: auto;
+    top: auto;
+    flex: 0 0 calc(100vw - 32px);
+    width: calc(100vw - 32px);
+    height: auto;
+    min-height: 0;
+    transform: none !important;
+    opacity: 1 !important;
+    pointer-events: auto;
+    will-change: auto;
+    scroll-snap-align: start;
+  }
+
+  .principles__carousel.principles__carousel--simple .principle-card__progress-fill {
+    transform: scaleX(1);
+  }
+
+}
+
 @media (max-width: 1440px) and (min-width: 992px) {
   .header__inner,
   .hero__inner,
@@ -5463,7 +5506,8 @@ body {
   }
 
   .additional-services {
-    overflow: visible;
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
 }
@@ -5710,8 +5754,7 @@ body {
   .additional-slider__viewport {
     width: 100%;
     padding-inline: 40px;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible;
   }
 
   .additional-slider > .slider-arrows {
@@ -5726,6 +5769,7 @@ body {
 
   .additional-slider__viewport {
     padding-inline: 16px;
+    overflow: visible;
   }
 
   .additional-slider > .slider-arrows {
@@ -5884,7 +5928,7 @@ body {
 
 /* Outer sections clipping: header -> main sections -> footer */
 .header,
-main > section[class]:not(.work-stages):not(.additional-services),
+main > section[class]:not(.work-stages):not(.additional-services):not(.portfolio),
 .footer {
   overflow: hidden;
 }
@@ -5948,5 +5992,19 @@ main > section[class]:not(.work-stages):not(.additional-services),
     height: auto;
     aspect-ratio: var(--spline-viewer-ratio);
   }
+}
+
+/* Render-heavy below-the-fold sections: defer painting until near viewport */
+main > .audience,
+main > .pricing,
+main > .feedback,
+main > .cta--bottom,
+main > .faq {
+  content-visibility: auto;
+  contain-intrinsic-size: 900px;
+}
+
+main > .feedback {
+  contain-intrinsic-size: 1100px;
 }
 

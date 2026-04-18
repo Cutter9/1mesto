@@ -9,7 +9,6 @@ export function initSmoothScroll() {
 
   if (!supportsFinePointer || prefersReducedMotion || isLikelyLowPerformanceDevice()) return;
   window.__smoothScrollInitialized = true;
-  const hasScrollTrigger = Boolean(window.ScrollTrigger);
 
   document.documentElement.style.scrollBehavior = "auto";
 
@@ -37,13 +36,13 @@ export function initSmoothScroll() {
     if (Math.abs(targetY - currentY) < SNAP_THRESHOLD) {
       currentY = targetY;
       window.scrollTo(0, currentY);
-      if (hasScrollTrigger) window.ScrollTrigger.update();
+      if (window.ScrollTrigger) window.ScrollTrigger.update();
       rafId = null;
       return;
     }
 
     window.scrollTo(0, currentY);
-    if (hasScrollTrigger) window.ScrollTrigger.update();
+    if (window.ScrollTrigger) window.ScrollTrigger.update();
     rafId = requestAnimationFrame(animate);
   };
 
